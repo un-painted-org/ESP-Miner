@@ -11,13 +11,13 @@
 #define I2C_MASTER_RX_BUF_DISABLE 0 /*!< I2C master doesn't need buffer */
 #define I2C_MASTER_TIMEOUT_MS 1000
 
-static const char *TAG = "EMC2302.c";
+static const char *TAG = "EMC2302";
 
 // run this first. sets up the config register
 static i2c_master_dev_handle_t emc2302_dev_handle;
 
 esp_err_t EMC2302_init(bool invertPolarity) {
-    if (i2c_bitaxe_add_device(EMC2302_I2CADDR_DEFAULT, &emc2302_dev_handle) != ESP_OK) {
+    if (i2c_bitaxe_add_device(EMC2302_I2CADDR_DEFAULT, &emc2302_dev_handle, TAG) != ESP_OK) {
         ESP_LOGE(TAG, "Failed to add device");
         return ESP_FAIL;
     }
