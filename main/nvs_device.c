@@ -45,7 +45,7 @@ esp_err_t NVSDevice_parse_config(GlobalState * GLOBAL_STATE) {
         GLOBAL_STATE->device_model = DEVICE_MAX;
         GLOBAL_STATE->asic_count = 1;
         GLOBAL_STATE->voltage_domain = 1;
-    } else if (strcmp(GLOBAL_STATE->device_model_str, "lv07") == 0) {
+    } else if (strcmp(GLOBAL_STATE->device_model_str, "lv07") == 0) { //the only one that will work on 12V power
         ESP_LOGI(TAG, "DEVICE: LV07");
         GLOBAL_STATE->device_model = DEVICE_LV07;
         GLOBAL_STATE->asic_count = 2;
