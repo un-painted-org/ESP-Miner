@@ -73,8 +73,6 @@ static double automatic_fan_speed(float chip_temp, GlobalState * GLOBAL_STATE)
         case DEVICE_ULTRA:
         case DEVICE_SUPRA:
         case DEVICE_GAMMA:
-            float perc = (float) result / 100;
-            GLOBAL_STATE->POWER_MANAGEMENT_MODULE.fan_perc = perc;
             EMC2101_set_fan_speed( perc );
             break;
         case DEVICE_LV07:
