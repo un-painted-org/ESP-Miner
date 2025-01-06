@@ -9,6 +9,7 @@
 #include "mining.h"
 #include "nvs_config.h"
 #include "serial.h"
+#include "TMP1075.h"
 #include "TPS546.h"
 #include "vcore.h"
 #include "thermal.h"
@@ -25,6 +26,10 @@
 
 #define TPS546_THROTTLE_TEMP 105.0
 #define TPS546_MAX_TEMP 145.0
+
+#define SUPRA_POWER_OFFSET 5
+#define GAMMA_POWER_OFFSET 5
+#define LV07_POWER_OFFSET 6
 
 static const char * TAG = "power_management";
 
@@ -44,7 +49,7 @@ static double automatic_fan_speed(float chip_temp, GlobalState * GLOBAL_STATE)
 {
     double result = 0.0;
     double min_temp = 45.0;
-    double min_fan_speed = 35.0;
+    double min_fan_speed = 20.0;
 
     if (chip_temp < min_temp) {
         result = min_fan_speed;
@@ -54,6 +59,24 @@ static double automatic_fan_speed(float chip_temp, GlobalState * GLOBAL_STATE)
         double temp_range = THROTTLE_TEMP - min_temp;
         double fan_range = 100 - min_fan_speed;
         result = ((chip_temp - min_temp) / temp_range) * fan_range + min_fan_speed;
+    }
+
+    float perc = (float) result / 100;
+    GLOBAL_STATE->POWER_MANAGEMENT_MODULE.fan_perc = perc;
+
+    switch (GLOBAL_STATE->device_model) {
+        case DEVICE_MAX:
+        case DEVICE_ULTRA:
+        case DEVICE_SUPRA:
+        case DEVICE_GAMMA:
+            float perc = (float) result / 100;
+            GLOBAL_STATE->POWER_MANAGEMENT_MODULE.fan_perc = perc;
+            EMC2101_set_fan_speed( perc );
+            break;
+        case DEVICE_LV07:
+            EMC2302_set_fan_speed(0,perc);
+            EMC2302_set_fan_speed(1,perc);
+        default:
     }
     PowerManagementModule * power_management = &GLOBAL_STATE->POWER_MANAGEMENT_MODULE;
     power_management->fan_perc = result;
@@ -75,12 +98,120 @@ void POWER_MANAGEMENT_task(void * pvParameters)
     //int last_frequency_increase = 0;
     //uint16_t frequency_target = nvs_config_get_u16(NVS_CONFIG_ASIC_FREQ, CONFIG_ASIC_FREQUENCY);
 
+    switch (GLOBAL_STATE->device_model) {
+        case DEVICE_MAX:
+        case DEVICE_ULTRA:
+        case DEVICE_SUPRA:
+			if (GLOBAL_STATE->board_version < 402 || GLOBAL_STATE->board_version > 499) {
+                // Configure plug sense pin as input(barrel jack) 1 is plugged in
+                gpio_config_t barrel_jack_conf = {
+                    .pin_bit_mask = (1ULL << GPIO_PLUG_SENSE),
+                    .mode = GPIO_MODE_INPUT,
+                };
+                gpio_config(&barrel_jack_conf);
+                int barrel_jack_plugged_in = gpio_get_level(GPIO_PLUG_SENSE);
+
+                gpio_set_direction(GPIO_ASIC_ENABLE, GPIO_MODE_OUTPUT);
+                if (barrel_jack_plugged_in == 1 || !power_management->HAS_PLUG_SENSE) {
+                    // turn ASIC on
+                    gpio_set_level(GPIO_ASIC_ENABLE, 0);
+                } else {
+                    // turn ASIC off
+                    gpio_set_level(GPIO_ASIC_ENABLE, 1);
+                }
+			}
+            break;
+        case DEVICE_GAMMA:
+            break;
+        case DEVICE_LV07:
+            TMP1075_init();
+            EMC2302_init(true);
+            break;
+        default:
+    }
+
     vTaskDelay(500 / portTICK_PERIOD_MS);
     uint16_t last_core_voltage = 0.0;
     uint16_t last_asic_frequency = power_management->frequency_value;
     
     while (1) {
 
+        switch (GLOBAL_STATE->device_model) {
+            case DEVICE_MAX:
+            case DEVICE_ULTRA:
+            case DEVICE_SUPRA:
+				if (GLOBAL_STATE->board_version >= 402 && GLOBAL_STATE->board_version <= 499) {
+                    power_management->voltage = TPS546_get_vin() * 1000;
+                    power_management->current = TPS546_get_iout() * 1000;
+                    // calculate regulator power (in milliwatts)
+                    power_management->power = (TPS546_get_vout() * power_management->current) / 1000;
+                    // The power reading from the TPS546 is only it's output power. So the rest of the Bitaxe power is not accounted for.
+                    power_management->power += SUPRA_POWER_OFFSET; // Add offset for the rest of the Bitaxe power. TODO: this better.
+				} else {
+                    if (INA260_installed() == true) {
+                        power_management->voltage = INA260_read_voltage();
+                        power_management->current = INA260_read_current();
+                        power_management->power = INA260_read_power() / 1000;
+                    }
+				}
+                power_management->fan_rpm = EMC2101_get_fan_speed();
+                break;
+            case DEVICE_GAMMA:
+                power_management->voltage = TPS546_get_vin() * 1000;
+                power_management->current = TPS546_get_iout() * 1000;
+                // calculate regulator power (in milliwatts)
+                power_management->power = (TPS546_get_vout() * power_management->current) / 1000;
+                // The power reading from the TPS546 is only it's output power. So the rest of the Bitaxe power is not accounted for.
+                power_management->power += GAMMA_POWER_OFFSET; // Add offset for the rest of the Bitaxe power. TODO: this better.
+
+                power_management->fan_rpm = EMC2101_get_fan_speed();
+                break;
+            case DEVICE_LV07:
+                //TPS546_print_status();
+                power_management->voltage = TPS546_get_vin() * 1000;
+                power_management->current = TPS546_get_iout() * 1000;
+                power_management->power = (TPS546_get_vout() * power_management->current) / 1000 + LV07_POWER_OFFSET;
+
+                power_management->fan_rpm = EMC2302_get_fan_speed(1);
+                break;
+            default:
+        }
+
+        switch (GLOBAL_STATE->device_model) {
+            case DEVICE_MAX:
+                power_management->chip_temp_avg = GLOBAL_STATE->ASIC_initalized ? EMC2101_get_external_temp() : -1;
+
+                if ((power_management->chip_temp_avg > THROTTLE_TEMP) &&
+                    (power_management->frequency_value > 50 || power_management->voltage > 1000)) {
+                    ESP_LOGE(TAG, "OVERHEAT ASIC %fC", power_management->chip_temp_avg );
+
+                    EMC2101_set_fan_speed(1);
+                    if (power_management->HAS_POWER_EN) {
+                        gpio_set_level(GPIO_ASIC_ENABLE, 1);
+                    }
+                    nvs_config_set_u16(NVS_CONFIG_ASIC_VOLTAGE, 1000);
+                    nvs_config_set_u16(NVS_CONFIG_ASIC_FREQ, 50);
+                    nvs_config_set_u16(NVS_CONFIG_FAN_SPEED, 100);
+                    nvs_config_set_u16(NVS_CONFIG_AUTO_FAN_SPEED, 0);
+                    nvs_config_set_u16(NVS_CONFIG_OVERHEAT_MODE, 1);
+                    exit(EXIT_FAILURE);
+                }
+                break;
+            case DEVICE_ULTRA:
+            case DEVICE_SUPRA:
+                
+                if (GLOBAL_STATE->board_version >= 402 && GLOBAL_STATE->board_version <= 499) {
+                    power_management->chip_temp_avg = GLOBAL_STATE->ASIC_initalized ? EMC2101_get_external_temp() : -1;
+                    power_management->vr_temp = (float)TPS546_get_temperature();
+                } else {
+                    power_management->chip_temp_avg = EMC2101_get_internal_temp() + 5;
+                    power_management->vr_temp = 0.0;
+                }
+
+                // EMC2101 will give bad readings if the ASIC is turned off
+                if(power_management->voltage < TPS546_INIT_VOUT_MIN){
+                    break;
+                }
         power_management->voltage = Power_get_input_voltage(GLOBAL_STATE);
         power_management->power = Power_get_power(GLOBAL_STATE);
 
@@ -104,6 +235,45 @@ void POWER_MANAGEMENT_task(void * pvParameters)
             // Turn off core voltage
             Power_disable(GLOBAL_STATE);
 
+                    nvs_config_set_u16(NVS_CONFIG_ASIC_VOLTAGE, 1000);
+                    nvs_config_set_u16(NVS_CONFIG_ASIC_FREQ, 50);
+                    nvs_config_set_u16(NVS_CONFIG_FAN_SPEED, 100);
+                    nvs_config_set_u16(NVS_CONFIG_AUTO_FAN_SPEED, 0);
+                    nvs_config_set_u16(NVS_CONFIG_OVERHEAT_MODE, 1);
+                    exit(EXIT_FAILURE);
+                }
+                break;
+            case DEVICE_LV07:
+                    //uint8_t temps[6] = {0,0,0,0,0,0};
+                    //max6689_read_temp(temps);
+                    //ESP_LOGI(TAG,"Diode Temp: [%d,%d,%d,%d,%d,%d]",temps[0],temps[1],temps[2],temps[3],temps[4],temps[5]);
+
+                    power_management->chip_temp_avg = (TMP1075_read_temperature(0)+TMP1075_read_temperature(1))/2+5;
+					power_management->vr_temp = (float)TPS546_get_temperature();
+
+                    // EMC2302 will give bad readings if the ASIC is turned off
+                    if(power_management->voltage < TPS546_INIT_VOUT_MIN){
+                        break;
+                    }
+                    // Need to fix for SUPRAHEX which read the actual ASIC temp.
+                    if ((power_management->vr_temp > TPS546_MAX_TEMP || power_management->chip_temp_avg > MAX_TEMP) &&
+                        (power_management->frequency_value > 50 || power_management->voltage > 1000)) {
+                        ESP_LOGE(TAG, "OVERHEAT  VR: %fC ASIC %fC", power_management->vr_temp, power_management->chip_temp_avg );
+
+                        EMC2302_set_fan_speed(0,1);
+                        EMC2302_set_fan_speed(1,1);
+                        VCORE_set_voltage(0.0, GLOBAL_STATE);
+                        nvs_config_set_u16(NVS_CONFIG_ASIC_VOLTAGE, 1000);
+                        nvs_config_set_u16(NVS_CONFIG_ASIC_FREQ, 50);
+                        nvs_config_set_u16(NVS_CONFIG_FAN_SPEED, 100);
+                        nvs_config_set_u16(NVS_CONFIG_AUTO_FAN_SPEED, 0);
+                        nvs_config_set_u16(NVS_CONFIG_OVERHEAT_MODE, 1);
+                        exit(EXIT_FAILURE);
+					}
+                    break;
+            default:
+        }
+
             nvs_config_set_u16(NVS_CONFIG_ASIC_VOLTAGE, 1000);
             nvs_config_set_u16(NVS_CONFIG_ASIC_FREQ, 50);
             nvs_config_set_u16(NVS_CONFIG_FAN_SPEED, 100);
@@ -117,6 +287,26 @@ void POWER_MANAGEMENT_task(void * pvParameters)
             power_management->fan_perc = (float)automatic_fan_speed(power_management->chip_temp_avg, GLOBAL_STATE);
 
         } else {
+            switch (GLOBAL_STATE->device_model) {
+                case DEVICE_MAX:
+                case DEVICE_ULTRA:
+                case DEVICE_SUPRA:
+                case DEVICE_GAMMA:
+
+                    float fs = (float) nvs_config_get_u16(NVS_CONFIG_FAN_SPEED, 100);
+                    power_management->fan_perc = fs;
+                    EMC2101_set_fan_speed((float) fs / 100);
+
+                    break;
+                case DEVICE_LV07:
+                    fs = (float) nvs_config_get_u16(NVS_CONFIG_FAN_SPEED, 100);
+                    //ESP_LOGI(TAG, "Manual Fan = %.02f", fs);
+                    power_management->fan_perc = fs;
+                    EMC2302_set_fan_speed(0,(float) fs / 100);
+                    EMC2302_set_fan_speed(1,(float) fs / 100);
+                    break;
+                default:
+            }
             float fs = (float) nvs_config_get_u16(NVS_CONFIG_FAN_SPEED, 100);
             power_management->fan_perc = fs;
             Thermal_set_fan_percent(GLOBAL_STATE->device_model, (float) fs / 100.0);

@@ -46,6 +46,10 @@ export class EditComponent implements OnInit, OnDestroy {
   ];
 
   public BM1366DropdownFrequency = [
+    { name: '200 (low clock)', value: 200 },
+    { name: '250 (low clock)', value: 250 },
+    { name: '300 (low clock)', value: 300 },
+    { name: '350 (low clock)', value: 350 },
     { name: '400', value: 400 },
     { name: '425', value: 425 },
     { name: '450', value: 450 },
@@ -101,6 +105,8 @@ export class EditComponent implements OnInit, OnDestroy {
     { name: '1500', value: 1500 },
   ];
   public BM1366CoreVoltage = [
+    { name: '1000 (low voltage)', value: 1000 },
+    { name: '1050 (low voltage)', value: 1050 },
     { name: '1100', value: 1100 },
     { name: '1150', value: 1150 },
     { name: '1200 (default)', value: 1200 },

@@ -5,7 +5,9 @@
 #include <esp_err.h>
 
 #include "EMC2101.h"
+#include "EMC2302.h"
 #include "EMC2103.h"
+#include "TMP1075.h"
 #include "global_state.h"
 
 esp_err_t Thermal_init(DeviceModel device_model, bool polarity);

@@ -23,6 +23,7 @@
 #include "INA260.h"
 #include "adc.h"
 #include "connect.h"
+#include "led_controller.h"
 #include "nvs_config.h"
 #include "display.h"
 #include "input.h"
@@ -115,6 +116,7 @@ void SYSTEM_init_peripherals(GlobalState * GLOBAL_STATE) {
         case DEVICE_SUPRA:
         case DEVICE_GAMMA:
         case DEVICE_GAMMATURBO:
+        case DEVICE_LV07:
             // display
             if (display_init(GLOBAL_STATE) != ESP_OK || !GLOBAL_STATE->SYSTEM_MODULE.is_screen_active) {
                 ESP_LOGW(TAG, "OLED init failed!");
