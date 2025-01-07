@@ -170,7 +170,7 @@ void POWER_MANAGEMENT_task(void * pvParameters)
                 power_management->current = TPS546_get_iout() * 1000;
                 power_management->power = (TPS546_get_vout() * power_management->current) / 1000 + LV07_POWER_OFFSET;
 
-                power_management->fan_rpm = EMC2302_get_fan_speed(1);
+                power_management->fan_rpm = EMC2302_get_fan_speed(0);
                 break;
             default:
         }
