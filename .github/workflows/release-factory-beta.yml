@@ -53,3 +53,4 @@ jobs:
         with:
           prerelease: true
           files: "esp-miner-factory-${{ matrix.build_type }}-${{ github.ref_name }}.bin"
+          token: ${{ secrets.GH_TOKEN }}
