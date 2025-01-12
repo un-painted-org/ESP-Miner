@@ -29,7 +29,7 @@
 #define VOLTAGE_RANGE (VOLTAGE_START_THROTTLE - VOLTAGE_MIN_THROTTLE)
 
 #define TPS546_THROTTLE_TEMP 105.0
-#define TPS546_MAX_TEMP 145.0
+#define TPS546_MAX_TEMP 135.0       //not used
 
 #define SUPRA_POWER_OFFSET 5
 #define GAMMA_POWER_OFFSET 5
@@ -275,7 +275,7 @@ void POWER_MANAGEMENT_task(void * pvParameters)
                         break;
                     }
                     // Need to fix for SUPRAHEX which read the actual ASIC temp.
-                    if ((power_management->vr_temp > TPS546_MAX_TEMP || power_management->chip_temp_avg > MAX_TEMP) &&
+                    if ((power_management->vr_temp > TPS546_THROTTLE_TEMP || power_management->chip_temp_avg > THROTTLE_TEMP) &&
                         (power_management->frequency_value > 50 || power_management->voltage > 1000)) {
                         ESP_LOGE(TAG, "OVERHEAT  VR: %fC ASIC %fC", power_management->vr_temp, power_management->chip_temp_avg );
 
