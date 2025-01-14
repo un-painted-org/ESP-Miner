@@ -26,6 +26,10 @@ esp_err_t EMC2302_init(bool invertPolarity) {
         ESP_ERROR_CHECK(i2c_bitaxe_register_write_byte(emc2302_dev_handle, EMC2302_PWM_POLARITY, 0b00011111));
     }
 
+    // Setting fan range to 00
+    ESP_ERROR_CHECK(i2c_bitaxe_register_write_byte(emc2302_dev_handle, EMC2302_FAN1_CONFIG1, 0b00001011));
+    //fan config read without write: 2B = 00101011
+
     return ESP_OK;
 }
 
