@@ -250,7 +250,7 @@ export class EditComponent implements OnInit, OnDestroy {
   }
 
   public restart() {
-    this.systemService.restart()
+    this.systemService.restart(this.uri)
       .pipe(this.loadingService.lockUIUntilComplete())
       .subscribe({
         next: () => {
