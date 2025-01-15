@@ -30,8 +30,8 @@ esp_err_t EMC2302_init(bool invertPolarity) {
     //ESP_ERROR_CHECK(i2c_bitaxe_register_write_byte(emc2302_dev_handle, EMC2302_FAN1_CONFIG1, 0b00001011));
     //fan config read without write: 2B = 00101011
 
-    // Setting fan range to 00 and edge to 00
-    ESP_ERROR_CHECK(i2c_bitaxe_register_write_byte(emc2302_dev_handle, EMC2302_FAN1_CONFIG1, 0b00000011));
+    // Setting fan range to 00 and edge to 11
+    ESP_ERROR_CHECK(i2c_bitaxe_register_write_byte(emc2302_dev_handle, EMC2302_FAN1_CONFIG1, 0b00011011));
 
     return ESP_OK;
 }
@@ -59,7 +59,7 @@ uint16_t EMC2302_get_fan_speed(uint8_t devicenum)
 
     ESP_LOGI(TAG, "Raw Fan Speed[%d] = %02X %02X", devicenum, tach_msb, tach_lsb);  // DEBUG
     RPM = (tach_msb << 5) + ((tach_lsb >> 3) & 0x1F);
-    RPM = EMC2302_FAN_RPM_NUMERATOR / RPM / 2;              //edge 1 > 0.5 factor
+    RPM = EMC2302_FAN_RPM_NUMERATOR / RPM * 2;              //edge poles 4 ->  factor 2
     ESP_LOGI(TAG, "Fan Speed[%d] = %d RPM", devicenum, RPM);                        // DEBUG
 
     // DEBUG: get fan config
