@@ -1,11 +1,14 @@
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/un-painted-org/esp-miner/total)
 
-***
-Customized firmware for the Lucky Miner LV07
+
+# Customized firmware for the Lucky Miner LV07
 
 Have a look at the wiki: https://github.com/un-painted-org/ESP-Miner/wiki
 
+
 ***
 
+*From parent repo*
 
 [![](https://dcbadge.vercel.app/api/server/3E8ca2dkcC)](https://discord.gg/3E8ca2dkcC)
 
