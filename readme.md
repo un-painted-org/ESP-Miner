@@ -2,6 +2,7 @@
 # Customized firmware for the Lucky Miner LV07
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/un-painted-org/esp-miner/total?color=gold)
 ![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/un-painted-org/ESP-Miner/latest/total?color=gold)
+![GitHub License](https://img.shields.io/github/license/un-painted-org/ESP-Miner?color=darkred)
 
 
 Have a look at the wiki: https://github.com/un-painted-org/ESP-Miner/wiki
