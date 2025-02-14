@@ -26,4 +26,3 @@ jobs:
       if: always()
       with:
           files: report.xml
-          token: ${{ secrets.GH_TOKEN }}
