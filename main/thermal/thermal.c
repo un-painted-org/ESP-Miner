@@ -87,6 +87,7 @@ float Thermal_get_chip_temp(GlobalState * GLOBAL_STATE) {
         case DEVICE_GAMMATURBO:
             return EMC2103_get_external_temp();
         case DEVICE_LV07:
+            ESP_LOGW("thermal.c", "TMP1075 Temp0: %fC Temp1: %fC", TMP1075_read_temperature(0), TMP1075_read_temperature(1) );
             return (TMP1075_read_temperature(0)+TMP1075_read_temperature(1))/2 + INTERNAL_OFFSET;
         default:
     }
