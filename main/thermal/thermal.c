@@ -1,4 +1,5 @@
 #include "thermal.h"
+#include "esp_log.h"
 
 #define INTERNAL_OFFSET 5 //degrees C
 
