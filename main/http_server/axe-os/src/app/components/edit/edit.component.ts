@@ -20,11 +20,10 @@ export class EditComponent implements OnInit, OnDestroy {
   public websiteUpdateProgress: number | null = null;
 
   public savedChanges: boolean = false;
-  public settingsUnlocked: boolean = false;
+  public devToolsOpen: boolean = false;
+  public proMode: boolean = false;
   public eASICModel = eASICModel;
   public ASICModel!: eASICModel;
-  public restrictedModels: eASICModel[] = Object.values(eASICModel)
-    .filter((v): v is eASICModel => typeof v === 'string');
 
   @Input() uri = '';
 
@@ -132,11 +131,8 @@ export class EditComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private loadingService: LoadingService
   ) {
-    // Add unlockSettings to window object for console access
-    (window as any).unlockSettings = () => {
-      this.settingsUnlocked = true;
-      console.log('Settings unlocked. You can now set custom frequency and voltage values.');
-    };
+    window.addEventListener('resize', this.checkDevTools.bind(this));
+    this.checkDevTools();
   }
 
   ngOnInit(): void {
@@ -172,10 +168,20 @@ export class EditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Remove unlockSettings from window object
-    delete (window as any).unlockSettings;
+    window.removeEventListener('resize', this.checkDevTools.bind(this));
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private checkDevTools(): void {
+    if (
+      window.outerWidth - window.innerWidth > 160 ||
+      window.outerHeight - window.innerHeight > 160
+    ) {
+      this.devToolsOpen = true;
+    } else {
+      this.devToolsOpen = false;
+    }
   }
 
   public updateSystem() {
