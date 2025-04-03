@@ -57,8 +57,6 @@ static wifi_ap_record_t ap_info[MAX_AP_COUNT];
 static int s_retry_num = 0;
 static int clients_connected_to_ap = 0;
 
-static const char *get_wifi_reason_string(int reason);
-
 esp_err_t get_wifi_current_rssi(int8_t *rssi)
 {
     wifi_ap_record_t current_ap_info;
@@ -132,6 +130,11 @@ esp_err_t wifi_scan(wifi_ap_record_simple_t *ap_records, uint16_t *ap_count)
     return ESP_OK;
 }
 
+static int s_retry_num = 0;
+static int clients_connected_to_ap = 0;
+
+static char * _ip_addr_str;
+
 static void event_handler(void * arg, esp_event_base_t event_base, int32_t event_id, void * event_data)
 {
     GlobalState *GLOBAL_STATE = (GlobalState *)arg;
@@ -173,36 +176,19 @@ static void event_handler(void * arg, esp_event_base_t event_base, int32_t event
 
             if (clients_connected_to_ap > 0) {
                 ESP_LOGI(TAG, "Client(s) connected to AP, not retrying...");
-                sprintf(GLOBAL_STATE->SYSTEM_MODULE.wifi_status, "Config AP connected!");
                 return;
             }
-
-            sprintf(GLOBAL_STATE->SYSTEM_MODULE.wifi_status, "%s (Error %d, retry #%d)", get_wifi_reason_string(event->reason), event->reason, s_retry_num);
-            ESP_LOGI(TAG, "Wi-Fi status: %s", GLOBAL_STATE->SYSTEM_MODULE.wifi_status);
 
             // Wait a little
             vTaskDelay(5000 / portTICK_PERIOD_MS);
 
             s_retry_num++;
             ESP_LOGI(TAG, "Retrying Wi-Fi connection...");
-            esp_wifi_connect();
-        }
-        
-        if (event_id == WIFI_EVENT_AP_START) {
-            ESP_LOGI(TAG, "Configuration Access Point enabled");
-            GLOBAL_STATE->SYSTEM_MODULE.ap_enabled = true;
-        }
-                
-        if (event_id == WIFI_EVENT_AP_STOP) {
-            ESP_LOGI(TAG, "Configuration Access Point disabled");
-            GLOBAL_STATE->SYSTEM_MODULE.ap_enabled = false;
-        }
-
-        if (event_id == WIFI_EVENT_AP_STACONNECTED) {
+            MINER_set_wifi_status(WIFI_RETRYING, s_retry_num, event->reason);
+            vTaskDelay(5000 / portTICK_PERIOD_MS);
+        } else if (event_id == WIFI_EVENT_AP_STACONNECTED) {
             clients_connected_to_ap += 1;
-        }
-        
-        if (event_id == WIFI_EVENT_AP_STADISCONNECTED) {
+        } else if (event_id == WIFI_EVENT_AP_STADISCONNECTED) {
             clients_connected_to_ap -= 1;
         }
     }
@@ -335,7 +321,8 @@ void wifi_init(void * pvParameters, const char * wifi_ssid, const char * wifi_pa
     wifi_softap_on();
 
     /* Initialize AP */
-    wifi_init_softap(GLOBAL_STATE->SYSTEM_MODULE.ap_ssid);
+    ESP_LOGI(TAG, "ESP_WIFI Access Point On");
+    wifi_init_softap();
 
     /* Skip connection if SSID is null */
     if (strlen(wifi_ssid) == 0) {
