@@ -1,9 +1,9 @@
+#include "main.h"
+
 #include "esp_event.h"
 #include "esp_log.h"
 #include "esp_psram.h"
 #include "nvs_flash.h"
-
-#include "main.h"
 
 #include "asic_result_task.h"
 #include "asic_task.h"

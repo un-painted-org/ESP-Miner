@@ -10,9 +10,8 @@
 #include "lwip/lwip_napt.h"
 #include "lwip/sys.h"
 #include "nvs_flash.h"
-#include "esp_wifi_types_generic.h"
-
 #include "connect.h"
+#include "main.h"
 #include "global_state.h"
 
 // Maximum number of access points to scan
