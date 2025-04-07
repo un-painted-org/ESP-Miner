@@ -32,9 +32,9 @@ static const char * TAG = "power_management";
 double pid_input = 0.0;
 double pid_output = 0.0;
 double pid_setPoint = 60.0;
-double pid_p = 4.0;
-double pid_i = 0.2;
-double pid_d = 3.0;
+double pid_p = 2.0;
+double pid_i = 0.1;
+double pid_d = 5.0;
 
 PIDController pid;
 

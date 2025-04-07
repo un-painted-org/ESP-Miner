@@ -137,17 +137,18 @@ export class EditComponent implements OnInit, OnDestroy {
           overheat_mode: [info.overheat_mode, [Validators.required]]
         });
 
-      this.form.controls['autofanspeed'].valueChanges.pipe(
-        startWith(this.form.controls['autofanspeed'].value),
-        takeUntil(this.destroy$)
-      ).subscribe(autofanspeed => {
-        if (autofanspeed) {
-          this.form.controls['fanspeed'].disable();
-          this.form.controls['temptarget'].enable();
-        } else {
-          this.form.controls['fanspeed'].enable();
-          this.form.controls['temptarget'].disable();
-        }
+        this.form.controls['autofanspeed'].valueChanges.pipe(
+          startWith(this.form.controls['autofanspeed'].value),
+          takeUntil(this.destroy$)
+        ).subscribe(autofanspeed => {
+          if (autofanspeed) {
+            this.form.controls['fanspeed'].disable();
+            this.form.controls['temptarget'].enable();
+          } else {
+            this.form.controls['fanspeed'].enable();
+            this.form.controls['temptarget'].disable();
+          }
+        });
       });
     });
   }

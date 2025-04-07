@@ -85,6 +85,7 @@ export class SettingsComponent {
           frequency: [info.frequency, [Validators.required]],
           autofanspeed: [info.autofanspeed == 1, [Validators.required]],
           temptarget: [info.temptarget, [Validators.required]],
+          invertfanpolarity: [info.invertfanpolarity == 1, [Validators.required]],
           fanspeed: [info.fanspeed, [Validators.required]],
         });
 
