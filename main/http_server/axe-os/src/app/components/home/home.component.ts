@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { interval, map, Observable, shareReplay, startWith, switchMap, tap } from 'rxjs';
 import { HashSuffixPipe } from 'src/app/pipes/hash-suffix.pipe';
 import { QuicklinkService } from 'src/app/services/quicklink.service';
-import { ShareRejectionExplanationService } from 'src/app/services/share-rejection-explanation.service';
 import { SystemService } from 'src/app/services/system.service';
 import { ThemeService } from 'src/app/services/theme.service';
 import { ISystemInfo } from 'src/models/ISystemInfo';
@@ -40,8 +39,7 @@ export class HomeComponent {
   constructor(
     private systemService: SystemService,
     private themeService: ThemeService,
-    private quickLinkService: QuicklinkService,
-    private shareRejectReasonsService: ShareRejectionExplanationService
+    private quicklinkService: QuicklinkService
   ) {
     this.initializeChart();
 
@@ -249,17 +247,13 @@ export class HomeComponent {
     }))
 
     this.quickLink$ = this.info$.pipe(
-      map(info => {
-        const url = info.isUsingFallbackStratum ? info.fallbackStratumURL : info.stratumURL;
-        const user = info.isUsingFallbackStratum ? info.fallbackStratumUser : info.stratumUser;
-        return this.quickLinkService.getQuickLink(url, user);
-      })
+      map(info => this.quicklinkService.getQuickLink(info.stratumURL, info.stratumUser))
     );
   }
 
-  getRejectionExplanation(reason: string): string | null {
-    return this.shareRejectReasonsService.getExplanation(reason);
-  }
+    this.fallbackQuickLink$ = this.info$.pipe(
+      map(info => this.quicklinkService.getQuickLink(info.fallbackStratumURL, info.fallbackStratumUser))
+    );
 
   getSortedRejectionReasons(info: ISystemInfo): ISystemInfo['sharesRejectedReasons'] {
     return [...(info.sharesRejectedReasons ?? [])].sort((a, b) => b.count - a.count);
