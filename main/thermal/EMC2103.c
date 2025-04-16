@@ -24,7 +24,10 @@ esp_err_t EMC2103_init() {
 
     // Configure the fan setting
     ESP_ERROR_CHECK(i2c_bitaxe_register_write_byte(EMC2103_dev_handle, EMC2103_CONFIGURATION1, 0));
-    ESP_ERROR_CHECK(i2c_bitaxe_register_write_byte(EMC2103_dev_handle, EMC2103_PWM_CONFIG, 0x00));
+
+    // //if (invertPolarity) {
+    ESP_ERROR_CHECK(i2c_bitaxe_register_write_byte(EMC2103_dev_handle, EMC2103_PWM_CONFIG, 0x01));
+    // //}
 
     return ESP_OK;
 
