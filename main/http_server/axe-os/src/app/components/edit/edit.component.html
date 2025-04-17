@@ -96,17 +96,12 @@
                     class="p-button-danger" pTooltip="Return to safe preset values only">
                 Disable Overclock Mode
             </button>
-        </div>
-
-        <div class="mt-2">
-            <button pButton [disabled]="savedChanges" (click)="restart()">Restart</button>
 
             <button *ngIf="!settingsUnlocked" pButton pButton="p-button-danger" (click)="toggleOverclockMode(true)"
-                    class="p-button-danger" pTooltip="Enable Pro Mode">
+                        class="p-button-danger" pTooltip="Enable Pro Mode">
                 Enable Overclock Mode
             </button>
         </div>
-
 
     </form>
 </ng-container>
