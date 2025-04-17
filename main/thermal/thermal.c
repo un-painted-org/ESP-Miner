@@ -6,6 +6,10 @@
 esp_err_t Thermal_init(DeviceModel device_model, bool polarity) {
         //init the EMC2101, if we have one
     switch (device_model) {
+        case DEVICE_LV07:
+            TMP1075_init();
+            EMC2302_init(polarity);
+            break;
         case DEVICE_MAX:
         case DEVICE_ULTRA:
         case DEVICE_SUPRA:
@@ -29,6 +33,10 @@ esp_err_t Thermal_init(DeviceModel device_model, bool polarity) {
 esp_err_t Thermal_set_fan_percent(DeviceModel device_model, float percent) {
 
     switch (device_model) {
+        case DEVICE_LV07:
+            EMC2302_set_fan_speed(0,percent);
+            EMC2302_set_fan_speed(1,percent);
+            break;
         case DEVICE_MAX:
         case DEVICE_ULTRA:
         case DEVICE_SUPRA:
@@ -45,6 +53,8 @@ esp_err_t Thermal_set_fan_percent(DeviceModel device_model, float percent) {
 
 uint16_t Thermal_get_fan_speed(DeviceModel device_model) {
     switch (device_model) {
+        case DEVICE_LV07:
+            return EMC2302_get_fan_speed(0);
         case DEVICE_MAX:
         case DEVICE_ULTRA:
         case DEVICE_SUPRA:
@@ -63,6 +73,8 @@ float Thermal_get_chip_temp(GlobalState * GLOBAL_STATE) {
     }
 
     switch (GLOBAL_STATE->device_model) {
+        case DEVICE_LV07:
+            return (TMP1075_read_temperature(0)+TMP1075_read_temperature(1))/2 + INTERNAL_OFFSET;
         case DEVICE_MAX:
             return EMC2101_get_external_temp();
         case DEVICE_ULTRA:

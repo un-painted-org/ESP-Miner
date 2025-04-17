@@ -7,11 +7,13 @@
 
 #define GPIO_ASIC_ENABLE CONFIG_GPIO_ASIC_ENABLE
 
+#define LV07_POWER_OFFSET 6 //Watts
 #define SUPRA_POWER_OFFSET 5 //Watts
 #define GAMMA_POWER_OFFSET 5 //Watts
 #define GAMMATURBO_POWER_OFFSET 5 //Watts
 
 // max power settings
+#define LV07_MAX_POWER 50 //watts
 #define MAX_MAX_POWER 25 //watts
 #define ULTRA_MAX_POWER 25 //Watts
 #define SUPRA_MAX_POWER 40 //watts
@@ -35,6 +37,7 @@ esp_err_t Power_disable(GlobalState * GLOBAL_STATE) {
                 gpio_set_level(GPIO_ASIC_ENABLE, 1);
             }
             break;
+        case DEVICE_LV07:
         case DEVICE_GAMMA:
         case DEVICE_GAMMATURBO:
             // Turn off core voltage
@@ -49,6 +52,8 @@ esp_err_t Power_disable(GlobalState * GLOBAL_STATE) {
 float Power_get_max_settings(GlobalState * GLOBAL_STATE) {
 
     switch (GLOBAL_STATE->device_model) {
+        case DEVICE_LV07:
+            return LV07_MAX_POWER;
         case DEVICE_MAX:
             return MAX_MAX_POWER;
         case DEVICE_ULTRA:
@@ -79,6 +84,7 @@ float Power_get_current(GlobalState * GLOBAL_STATE) {
                 }
             }
             break;
+        case DEVICE_LV07:
         case DEVICE_GAMMA:
         case DEVICE_GAMMATURBO:
             current = TPS546_get_iout() * 1000.0;
@@ -110,6 +116,13 @@ float Power_get_power(GlobalState * GLOBAL_STATE) {
             }
         
             break;
+        case DEVICE_GAMMATURBO:
+                current = TPS546_get_iout() * 1000.0;
+                // calculate regulator power (in milliwatts)
+                power = (TPS546_get_vout() * current) / 1000.0;
+                // The power reading from the TPS546 is only it's output power. So the rest of the Bitaxe power is not accounted for.
+                power += LV07_POWER_OFFSET; // Add offset for the rest of the Bitaxe power. TODO: this better.
+            break;
         case DEVICE_GAMMA:
         case DEVICE_GAMMATURBO:
                 current = TPS546_get_iout() * 1000.0;
@@ -140,6 +153,7 @@ float Power_get_input_voltage(GlobalState * GLOBAL_STATE) {
             }
         
             break;
+        case DEVICE_LV07:
         case DEVICE_GAMMA:
         case DEVICE_GAMMATURBO:
                 return TPS546_get_vin() * 1000.0;
@@ -158,6 +172,7 @@ int Power_get_nominal_voltage(GlobalState * GLOBAL_STATE) {
         case DEVICE_SUPRA:
         case DEVICE_GAMMA:
             return NOMINAL_VOLTAGE_5;
+        case DEVICE_LV07:
         case DEVICE_GAMMATURBO:
             return NOMINAL_VOLTAGE_12;
         default:
@@ -180,6 +195,7 @@ float Power_get_vreg_temp(GlobalState * GLOBAL_STATE) {
             }
         
             break;
+        case DEVICE_LV07:
         case DEVICE_GAMMA:
         case DEVICE_GAMMATURBO:
                 return TPS546_get_temperature();
