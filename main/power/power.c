@@ -116,7 +116,7 @@ float Power_get_power(GlobalState * GLOBAL_STATE) {
             }
         
             break;
-        case DEVICE_GAMMATURBO:
+        case DEVICE_LV07:
                 current = TPS546_get_iout() * 1000.0;
                 // calculate regulator power (in milliwatts)
                 power = (TPS546_get_vout() * current) / 1000.0;
