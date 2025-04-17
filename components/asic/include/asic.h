@@ -5,6 +5,7 @@
 #include "global_state.h"
 #include "common.h"
 
+#define LV07_ASIC_COUNT 2
 #define BITAXE_MAX_ASIC_COUNT 1
 #define BITAXE_ULTRA_ASIC_COUNT 1
 #define BITAXE_SUPRA_ASIC_COUNT 1

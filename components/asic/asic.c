@@ -16,6 +16,8 @@ static const char *TAG = "asic";
 // .init_fn = BM1366_init,
 uint8_t ASIC_init(GlobalState * GLOBAL_STATE) {
     switch (GLOBAL_STATE->device_model) {
+        case DEVICE_LV07:
+            return BM1366_init(GLOBAL_STATE->POWER_MANAGEMENT_MODULE.frequency_value, LV07_ASIC_COUNT);
         case DEVICE_MAX:
             return BM1397_init(GLOBAL_STATE->POWER_MANAGEMENT_MODULE.frequency_value, BITAXE_MAX_ASIC_COUNT);
         case DEVICE_ULTRA:
@@ -33,6 +35,8 @@ uint8_t ASIC_init(GlobalState * GLOBAL_STATE) {
 
 uint8_t ASIC_get_asic_count(GlobalState * GLOBAL_STATE) {
     switch (GLOBAL_STATE->device_model) {
+        case DEVICE_LV07:
+            return LV07_ASIC_COUNT;
         case DEVICE_MAX:
             return BITAXE_MAX_ASIC_COUNT;
         case DEVICE_ULTRA:
@@ -53,6 +57,7 @@ uint16_t ASIC_get_small_core_count(GlobalState * GLOBAL_STATE) {
         case DEVICE_MAX:
             return BM1397_SMALL_CORE_COUNT;
         case DEVICE_ULTRA:
+        case DEVICE_LV07:
             return BM1366_SMALL_CORE_COUNT;
         case DEVICE_SUPRA:
             return BM1368_SMALL_CORE_COUNT;
@@ -71,6 +76,7 @@ task_result * ASIC_process_work(GlobalState * GLOBAL_STATE) {
         case DEVICE_MAX:
             return BM1397_process_work(GLOBAL_STATE);
         case DEVICE_ULTRA:
+        case DEVICE_LV07:
             return BM1366_process_work(GLOBAL_STATE);
         case DEVICE_SUPRA:
             return BM1368_process_work(GLOBAL_STATE);
@@ -88,6 +94,7 @@ int ASIC_set_max_baud(GlobalState * GLOBAL_STATE) {
         case DEVICE_MAX:
             return BM1397_set_max_baud();
         case DEVICE_ULTRA:
+        case DEVICE_LV07:
             return BM1366_set_max_baud();
         case DEVICE_SUPRA:
             return BM1368_set_max_baud();
@@ -106,6 +113,7 @@ void ASIC_set_job_difficulty_mask(GlobalState * GLOBAL_STATE, uint8_t mask) {
             BM1397_set_job_difficulty_mask(mask);
             break;
         case DEVICE_ULTRA:
+        case DEVICE_LV07:
             BM1366_set_job_difficulty_mask(mask);
             break;
         case DEVICE_SUPRA:
@@ -126,6 +134,7 @@ void ASIC_send_work(GlobalState * GLOBAL_STATE, void * next_job) {
             BM1397_send_work(GLOBAL_STATE, next_job);
             break;
         case DEVICE_ULTRA:
+        case DEVICE_LV07:
             BM1366_send_work(GLOBAL_STATE, next_job);
             break;
         case DEVICE_SUPRA:
@@ -147,6 +156,7 @@ void ASIC_set_version_mask(GlobalState * GLOBAL_STATE, uint32_t mask) {
             BM1397_set_version_mask(mask);
             break;
         case DEVICE_ULTRA:
+        case DEVICE_LV07:
             BM1366_set_version_mask(mask);
             break;
         case DEVICE_SUPRA:
@@ -218,6 +228,15 @@ esp_err_t ASIC_set_device_model(GlobalState * GLOBAL_STATE) {
         ESP_LOGI(TAG, "DEVICE: bitaxeUltra");
         ESP_LOGI(TAG, "ASIC: %dx BM1366 (%" PRIu64 " cores)", BITAXE_ULTRA_ASIC_COUNT, BM1366_CORE_COUNT);
         GLOBAL_STATE->device_model = DEVICE_ULTRA;
+
+    } else if (strcmp(GLOBAL_STATE->device_model_str, "lv07") == 0) {
+        GLOBAL_STATE->asic_model = ASIC_BM1366;
+        //GLOBAL_STATE.asic_job_frequency_ms = (NONCE_SPACE / (double) (GLOBAL_STATE.POWER_MANAGEMENT_MODULE.frequency_value * BM1366_CORE_COUNT * 1000)) / (double) BITAXE_ULTRA_ASIC_COUNT; // version-rolling so Small Cores have different Nonce Space
+        GLOBAL_STATE->asic_job_frequency_ms = 2000; //ms
+        GLOBAL_STATE->ASIC_difficulty = BM1366_ASIC_DIFFICULTY;
+        ESP_LOGI(TAG, "DEVICE: Lucky Miner LV07");
+        ESP_LOGI(TAG, "ASIC: %dx BM1366 (%" PRIu64 " cores)", LV07_ASIC_COUNT, BM1366_CORE_COUNT);
+        GLOBAL_STATE->device_model = DEVICE_LV07;
 
     } else if (strcmp(GLOBAL_STATE->device_model_str, "supra") == 0) {
         GLOBAL_STATE->asic_model = ASIC_BM1368;

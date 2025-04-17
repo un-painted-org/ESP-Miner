@@ -23,6 +23,7 @@
 typedef enum
 {
     DEVICE_UNKNOWN = -1,
+    DEVICE_LV07,
     DEVICE_MAX,
     DEVICE_ULTRA,
     DEVICE_SUPRA,

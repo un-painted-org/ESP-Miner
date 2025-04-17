@@ -61,6 +61,7 @@ esp_err_t VCORE_init(GlobalState * GLOBAL_STATE) {
         case DEVICE_GAMMA:
             ESP_RETURN_ON_ERROR(TPS546_init(TPS546_CONFIG_GAMMA), TAG, "TPS546 init failed!");
             break;
+        case DEVICE_LV07:
         case DEVICE_GAMMATURBO:
             ESP_RETURN_ON_ERROR(TPS546_init(TPS546_CONFIG_GAMMATURBO), TAG, "TPS546 init failed!");
             break;
@@ -92,6 +93,7 @@ esp_err_t VCORE_init(GlobalState * GLOBAL_STATE) {
                 }
 			}
             break;
+        case DEVICE_LV07:
         case DEVICE_GAMMA:
         case DEVICE_GAMMATURBO:
             break;
@@ -115,6 +117,7 @@ esp_err_t VCORE_set_voltage(float core_voltage, GlobalState * global_state)
                 ESP_RETURN_ON_ERROR(DS4432U_set_voltage(core_voltage), TAG, "DS4432U set voltage failed!");
             }
             break;
+        case DEVICE_LV07:
         case DEVICE_GAMMA:
         case DEVICE_GAMMATURBO:
                 ESP_LOGI(TAG, "Set ASIC voltage = %.3fV", core_voltage);
@@ -130,6 +133,8 @@ esp_err_t VCORE_set_voltage(float core_voltage, GlobalState * global_state)
 int16_t VCORE_get_voltage_mv(GlobalState * global_state) {
 
     switch (global_state->device_model) {
+        case DEVICE_LV07:
+            return (TPS546_get_vout() * 1000);
         case DEVICE_MAX:
         case DEVICE_ULTRA:
         case DEVICE_SUPRA:
@@ -152,6 +157,7 @@ esp_err_t VCORE_check_fault(GlobalState * global_state) {
                 ESP_RETURN_ON_ERROR(TPS546_check_status(global_state), TAG, "TPS546 check status failed!");
             }
             break;
+        case DEVICE_LV07:
         case DEVICE_GAMMA:
         case DEVICE_GAMMATURBO:
         ESP_RETURN_ON_ERROR(TPS546_check_status(global_state), TAG, "TPS546 check status failed!");
@@ -171,6 +177,7 @@ const char* VCORE_get_fault_string(GlobalState * global_state) {
                 return TPS546_get_error_message();
             }
             break;
+        case DEVICE_LV07:
         case DEVICE_GAMMA:
         case DEVICE_GAMMATURBO:
             return TPS546_get_error_message();
