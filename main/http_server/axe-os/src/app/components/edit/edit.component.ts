@@ -49,6 +49,8 @@ export class EditComponent implements OnInit, OnDestroy {
   ];
 
   public BM1366DropdownFrequency = [
+    { name: '200 (low clock)', value: 200 },
+    { name: '300 (low clock)', value: 300 },
     { name: '400', value: 400 },
     { name: '425', value: 425 },
     { name: '450', value: 450 },
@@ -61,6 +63,8 @@ export class EditComponent implements OnInit, OnDestroy {
   ];
 
   public BM1368DropdownFrequency = [
+    { name: '200 (low clock)', value: 200 },
+    { name: '300 (low clock)', value: 300 },
     { name: '400', value: 400 },
     { name: '425', value: 425 },
     { name: '450', value: 450 },
@@ -73,6 +77,8 @@ export class EditComponent implements OnInit, OnDestroy {
   ];
 
   public BM1370DropdownFrequency = [
+    { name: '200 (low clock)', value: 200 },
+    { name: '300 (low clock)', value: 300 },
     { name: '400', value: 400 },
     { name: '490', value: 490 },
     { name: '525 (default)', value: 525 },
