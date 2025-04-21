@@ -467,6 +467,9 @@ static esp_err_t PATCH_update_settings(httpd_req_t * req)
     if ((item = cJSON_GetObjectItem(root, "invertscreen")) != NULL) {
         nvs_config_set_u16(NVS_CONFIG_INVERT_SCREEN, item->valueint);
     }
+    if ((item = cJSON_GetObjectItem(root, "displayTimeout")) != NULL) {
+        nvs_config_set_i32(NVS_CONFIG_DISPLAY_TIMEOUT, item->valueint);
+    }
     if ((item = cJSON_GetObjectItem(root, "autofanspeed")) != NULL) {
         nvs_config_set_u16(NVS_CONFIG_AUTO_FAN_SPEED, item->valueint);
     }
