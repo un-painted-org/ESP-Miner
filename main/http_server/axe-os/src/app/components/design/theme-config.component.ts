@@ -228,15 +228,9 @@ export class ThemeConfigComponent implements OnInit {
     // Load saved theme settings from NVS
     this.themeService.getThemeSettings().subscribe(
       settings => {
-        if (settings) {
-          // Apply saved color scheme
-          if (settings.colorScheme) {
-            this.selectedScheme = settings.colorScheme;
-          }
-          // Apply accent colors if they exist
-          if (settings.accentColors) {
-            this.applyThemeColors(settings.accentColors);
-          }
+        if (settings && settings.accentColors) {
+          this.applyThemeColors(settings.accentColors);
+          this.currentColor = settings.accentColors['--primary-color'];
         }
       },
       error => console.error('Error loading theme settings:', error)
