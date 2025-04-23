@@ -8,7 +8,7 @@ esp_err_t Thermal_init(DeviceModel device_model) {
     switch (device_model) {
         case DEVICE_LV07:
             TMP1075_init();
-            EMC2302_init(polarity);
+            EMC2302_init(); 
             break;
         case DEVICE_MAX:
         case DEVICE_ULTRA:
