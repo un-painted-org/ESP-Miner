@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { interval, map, Observable, shareReplay, startWith, switchMap, tap } from 'rxjs';
 import { HashSuffixPipe } from 'src/app/pipes/hash-suffix.pipe';
+import { MiningPool } from 'src/app/services/pools/mining-pool.interface';
+import { PoolFactoryService } from 'src/app/services/pools/pool-factory.service';
 import { SystemService } from 'src/app/services/system.service';
 import { ThemeService } from 'src/app/services/theme.service';
 import { ISystemInfo } from 'src/models/ISystemInfo';
@@ -14,10 +16,7 @@ import { ISystemInfo } from 'src/models/ISystemInfo';
 export class HomeComponent {
 
   public info$!: Observable<ISystemInfo>;
-  public quickLink$!: Observable<string | undefined>;
-  public fallbackQuickLink$!: Observable<string | undefined>;
   public expectedHashRate$!: Observable<number | undefined>;
-
 
   public chartOptions: any;
   public dataLabel: number[] = [];
@@ -31,9 +30,18 @@ export class HomeComponent {
   public maxTemp: number = 75;
   public maxFrequency: number = 800;
 
+  public pool!: MiningPool;
+  public quickLink$!: Observable<string | undefined>;
+
+  public activePoolURL!: string;
+  public activePoolPort!: number;
+  public activePoolUser!: string;
+  public activePoolLabel!: 'Primary' | 'Fallback';
+
   constructor(
     private systemService: SystemService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private poolFactory: PoolFactoryService
   ) {
     this.initializeChart();
 
@@ -56,8 +64,6 @@ export class HomeComponent {
       this.chartData.datasets[0].borderColor = primaryColor;
       this.chartData.datasets[1].backgroundColor = primaryColor + '30';
       this.chartData.datasets[1].borderColor = primaryColor + '60';
-      this.chartData.datasets[2].backgroundColor = textColorSecondary;
-      this.chartData.datasets[2].borderColor = textColorSecondary;
     }
 
     // Update chart options
@@ -218,6 +224,14 @@ export class HomeComponent {
         this.maxTemp = Math.max(75, info.temp);
         this.maxFrequency = Math.max(800, info.frequency);
 
+        const isFallback = info.isUsingFallbackStratum;
+
+        this.activePoolLabel = isFallback ? 'Fallback' : 'Primary';
+        this.activePoolURL = isFallback ? info.fallbackStratumURL : info.stratumURL;
+        this.activePoolUser = isFallback ? info.fallbackStratumUser : info.stratumUser;
+        this.activePoolPort = isFallback ? info.fallbackStratumPort : info.stratumPort;
+        
+        this.pool = this.poolFactory.getPoolForUrl(this.activePoolURL);        
       }),
       map(info => {
         info.power = parseFloat(info.power.toFixed(1))
@@ -237,42 +251,27 @@ export class HomeComponent {
     }))
 
     this.quickLink$ = this.info$.pipe(
-      map(info => this.getQuickLink(info.stratumURL, info.stratumUser))
+      map(info => {
+        const url = info.isUsingFallbackStratum ? info.fallbackStratumURL : info.stratumURL;
+        const user = info.isUsingFallbackStratum ? info.fallbackStratumUser : info.stratumUser;
+        const pool = this.poolFactory.getPoolForUrl(url);
+        return pool.getQuickLink(url, user);
+      })
     );
+  }
 
-    this.fallbackQuickLink$ = this.info$.pipe(
-      map(info => this.getQuickLink(info.fallbackStratumURL, info.fallbackStratumUser))
-    );
+  getRejectionExplanation(reason: string): string | null {
+    return this.pool?.getRejectionExplanation(reason) ?? null;
+  }
 
+  getSortedRejectedReasons(info: ISystemInfo): ISystemInfo['sharesRejectedReasons'] {
+    return [...(info.sharesRejectedReasons ?? [])].sort((a, b) => b.count - a.count);
   }
 
   public calculateAverage(data: number[]): number {
     if (data.length === 0) return 0;
     const sum = data.reduce((sum, value) => sum + value, 0);
     return sum / data.length;
-  }
-
-  private getQuickLink(stratumURL: string, stratumUser: string): string | undefined {
-    const address = stratumUser.split('.')[0];
-
-    if (stratumURL.includes('public-pool.io')) {
-      return `https://web.public-pool.io/#/app/${address}`;
-    } else if (stratumURL.includes('ocean.xyz')) {
-      return `https://ocean.xyz/stats/${address}`;
-    } else if (stratumURL.includes('solo.d-central.tech')) {
-      return `https://solo.d-central.tech/#/app/${address}`;
-    } else if (/^eusolo[46]?.ckpool.org/.test(stratumURL)) {
-      return `https://eusolostats.ckpool.org/users/${address}`;
-    } else if (/^solo[46]?.ckpool.org/.test(stratumURL)) {
-      return `https://solostats.ckpool.org/users/${address}`;
-    } else if (stratumURL.includes('pool.noderunners.network')) {
-      return `https://noderunners.network/en/pool/user/${address}`;
-    } else if (stratumURL.includes('satoshiradio.nl')) {
-      return `https://pool.satoshiradio.nl/user/${address}`;
-    } else if (stratumURL.includes('solohash.co.uk')) {
-      return `https://solohash.co.uk/user/${address}`;
-    }
-    return stratumURL.startsWith('http') ? stratumURL : `http://${stratumURL}`;
   }
 
   public calculateEfficiencyAverage(hashrateData: number[], powerData: number[]): number {
@@ -285,5 +284,5 @@ export class HomeComponent {
     });
 
     return this.calculateAverage(efficiencies);
-  }
+  }  
 }
