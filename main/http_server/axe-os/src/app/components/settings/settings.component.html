@@ -17,7 +17,7 @@
                     <a style="text-decoration: underline;" target="_blank"
                     [href]="latestRelease.html_url">{{latestRelease.name}}</a>
                 </h2>
-                <div class="ml-3" *ngFor="let asset of latestRelease.assets">
+                <div class="ml-4" *ngFor="let asset of latestRelease.assets">
                     <div *ngIf="asset.name == 'esp-miner.bin'">
                         <a style="text-decoration: underline;" target="_blank"
                             [href]="asset.browser_download_url">esp-miner.bin</a>
@@ -33,7 +33,7 @@
                     <a style="text-decoration: underline;" target="_blank"
                     [href]="latestPreRelease.html_url">{{latestPreRelease.name}}</a>
                 </h2>
-                <div class="ml-3" *ngFor="let asset of latestPreRelease.assets">
+                <div class="ml-4" *ngFor="let asset of latestPreRelease.assets">
                     <div *ngIf="asset.name == 'esp-miner.bin'">
                         <a style="text-decoration: underline;" target="_blank"
                             [href]="asset.browser_download_url">esp-miner.bin</a>
