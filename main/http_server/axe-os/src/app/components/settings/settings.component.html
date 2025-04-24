@@ -30,7 +30,7 @@
 
             <h2>Latest Pre-release
                 <a style="text-decoration: underline;" target="_blank"
-                [href]="latesPretRelease.html_url">{{latestPreRelease.name}}</a>
+                [href]="latestPreRelease.html_url">{{latestPreRelease.name}}</a>
             </h2>
             <div class="ml-3" *ngFor="let asset of latestPreRelease.assets">
                 <div *ngIf="asset.name == 'esp-miner.bin'">
