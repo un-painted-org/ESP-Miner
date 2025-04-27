@@ -44,6 +44,8 @@ esp_err_t GET_system_asic(httpd_req_t *req)
     // Set different frequency and voltage options based on ASIC model
     if (strcmp(GLOBAL_STATE->asic_model_str, "BM1370") == 0) {
         // BM1370 frequency options
+        cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(200));
+        cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(300));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(400));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(490));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(525));
@@ -80,6 +82,8 @@ esp_err_t GET_system_asic(httpd_req_t *req)
     } 
     else if (strcmp(GLOBAL_STATE->asic_model_str, "BM1366") == 0) {
         // BM1366 frequency options
+        cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(200));
+        cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(300));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(400));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(425));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(450));
