@@ -52,7 +52,7 @@ esp_err_t GET_system_asic(httpd_req_t *req)
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(550));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(600));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(625));
-
+        
         // BM1370 voltage options
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1000));
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1060));
@@ -68,7 +68,6 @@ esp_err_t GET_system_asic(httpd_req_t *req)
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(450));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(475));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(485));
-        cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(490));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(500));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(525));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(550));
@@ -77,7 +76,6 @@ esp_err_t GET_system_asic(httpd_req_t *req)
         // BM1368 voltage options
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1100));
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1150));
-        cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1166));
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1200));
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1250));
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1300));
@@ -95,7 +93,7 @@ esp_err_t GET_system_asic(httpd_req_t *req)
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(525));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(550));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(575));
-
+        
         // BM1366 voltage options
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1100));
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1150));
@@ -115,7 +113,7 @@ esp_err_t GET_system_asic(httpd_req_t *req)
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(550));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(575));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(600));
-
+        
         // BM1397 voltage options
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1100));
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1150));
@@ -132,16 +130,16 @@ esp_err_t GET_system_asic(httpd_req_t *req)
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(400));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(425));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(450));
-
+        
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1200));
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1250));
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1300));
     }
-
+    
     // Add the arrays to the response
     cJSON_AddItemToObject(root, "frequencyOptions", freqOptions);
     cJSON_AddItemToObject(root, "voltageOptions", voltageOptions);
-
+    
     const char *response = cJSON_Print(root);
     httpd_resp_sendstr(req, response);
 
