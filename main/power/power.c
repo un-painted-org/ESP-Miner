@@ -125,12 +125,18 @@ float Power_get_power(GlobalState * GLOBAL_STATE) {
                 power += LV07_POWER_OFFSET; // Add offset for the rest of the Bitaxe power. TODO: this better.
             break;
         case DEVICE_GAMMA:
+            current = TPS546_get_iout() * 1000.0;
+            // calculate regulator power (in milliwatts)
+            power = (TPS546_get_vout() * current) / 1000.0;
+            // The power reading from the TPS546 is only it's output power. So the rest of the Bitaxe power is not accounted for.
+            power += GAMMA_POWER_OFFSET; // Add offset for the rest of the Bitaxe power. TODO: this better.
+            break;
         case DEVICE_GAMMATURBO:
-                current = TPS546_get_iout() * 1000.0;
-                // calculate regulator power (in milliwatts)
-                power = (TPS546_get_vout() * current) / 1000.0;
-                // The power reading from the TPS546 is only it's output power. So the rest of the Bitaxe power is not accounted for.
-                power += GAMMATURBO_POWER_OFFSET; // Add offset for the rest of the Bitaxe power. TODO: this better.
+            current = TPS546_get_iout() * 1000.0;
+            // calculate regulator power (in milliwatts)
+            power = (TPS546_get_vout() * current) / 1000.0;
+            // The power reading from the TPS546 is only it's output power. So the rest of the Bitaxe power is not accounted for.
+            power += GAMMATURBO_POWER_OFFSET; // Add offset for the rest of the Bitaxe power. TODO: this better.
             break;
         default:
     }
