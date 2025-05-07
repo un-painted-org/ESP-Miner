@@ -32,7 +32,7 @@ extern const lv_img_dsc_t bitaxe_logo;
 extern const lv_img_dsc_t osmu_logo;
 
 static lv_obj_t * screens[MAX_SCREENS];
-static int delays_ms[MAX_SCREENS] = {0, 0, 0, 0, 0, 1000, 2000, 5000, 10000, 10000};
+static int delays_ms[MAX_SCREENS] = {0, 0, 0, 0, 0, 1000, 2000, 3000, 2000, 10000};
 
 static screen_t current_screen = -1;
 static int current_screen_time_ms;
@@ -223,12 +223,13 @@ static lv_obj_t * create_scr_unpainted(SystemModule * module) {
     lv_obj_set_flex_align(scr, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
 
     lv_obj_t *label1 = lv_label_create(scr);
-    lv_label_set_text(label1, "--- unpainted ---");
+    lv_label_set_text(label1, "-------------");
 
     lv_obj_t *label2 = lv_label_create(scr);
-    lv_obj_set_width(label2, LV_HOR_RES);
-    lv_label_set_long_mode(label2, LV_LABEL_LONG_SCROLL_CIRCULAR);
-    lv_label_set_text(label2, "Open source is like a party: everyone is invited, and you can bring your own snacks!");
+    lv_label_set_text(label2, "  unpainted  ");
+
+    lv_obj_t *label3 = lv_label_create(scr);
+    lv_label_set_text(label3, "-------------");
 
     return scr;
 }
