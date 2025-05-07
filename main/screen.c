@@ -433,7 +433,7 @@ esp_err_t screen_start(void * pvParameters)
         screens[SCR_FIRMWARE_UPDATE] = create_scr_ota(module);
         screens[SCR_CONNECTION] = create_scr_connection(module);
         screens[SCR_BITAXE_LOGO] = create_scr_logo(&bitaxe_logo);
-        screens[SCR_OSMU_LOGO] = create_scr_unpainted(&osmu_logo);
+        screens[SCR_OSMU_LOGO] = create_scr_unpainted(module);
         screens[SCR_URLS] = create_scr_urls(module);
         screens[SCR_STATS] = create_scr_stats();
 
