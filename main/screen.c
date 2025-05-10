@@ -217,8 +217,6 @@ static lv_obj_t * create_scr_urls(SystemModule * module) {
 }
 
 static lv_obj_t * create_scr_unpainted(SystemModule * module) {
-    const esp_app_desc_t *app_desc = esp_app_get_description();
-
     lv_obj_t * scr = lv_obj_create(NULL);
 
     lv_obj_set_flex_flow(scr, LV_FLEX_FLOW_COLUMN);
@@ -228,7 +226,7 @@ static lv_obj_t * create_scr_unpainted(SystemModule * module) {
     lv_label_set_text(label1, "  unpainted  ");
 
     lv_obj_t *label2 = lv_label_create(scr);
-    lv_label_set_text(label2, app_desc->version);
+    lv_label_set_text(label2, esp_app_get_description()->version);
 
     return scr;
 }
