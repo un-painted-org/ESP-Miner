@@ -4,50 +4,32 @@
 </div>
 
 <div class="grid">
-    <div class="col-12 xl:col-4">
+    <div class="col-12 lg:col-6 xl:col-4">
         <div class="card" *ngIf="checkLatestRelease == false">
             <h5>Current Version: {{(info$ | async)?.version}}</h5>
             <h2>Latest Release: <p-button (onClick)="checkLatestRelease = true">Check</p-button></h2>
             <small>Clicking this button will connect to GitHub to check for recent updates</small>
         </div>
-        <div class="card h-full" *ngIf="checkLatestRelease == true">
-            <h5>Current Version: {{(info$ | async)?.version}}</h5>
+        <div class="card" *ngIf="checkLatestRelease == true">
             <ng-container *ngIf="latestRelease$ | async as latestRelease">
-                <h2>Latest Release
+            <h5>Current Version: {{(info$ | async)?.version}}</h5>
+            <h2>Latest Release: {{latestRelease.name}}</h2>
+
+            <div *ngFor="let asset of latestRelease.assets">
+                <div *ngIf="asset.name == 'esp-miner.bin'">
                     <a style="text-decoration: underline;" target="_blank"
-                    [href]="latestRelease.html_url">{{latestRelease.name}}</a>
-                </h2>
-                <div class="ml-4" *ngFor="let asset of latestRelease.assets">
-                    <div *ngIf="asset.name == 'esp-miner.bin'">
-                        <a style="text-decoration: underline;" target="_blank"
-                            [href]="asset.browser_download_url">esp-miner.bin</a>
-                    </div>
-                    <div *ngIf="asset.name == 'www.bin'">
-                        <a style="text-decoration: underline;" target="_blank"
-                            [href]="asset.browser_download_url">www.bin</a>
-                    </div>
+                        [href]="asset.browser_download_url">esp-miner.bin</a>
                 </div>
-            </ng-container>
-            <ng-container *ngIf="latestPreRelease$ | async as latestPreRelease">
-                <h2>Latest Pre-release
+                <div *ngIf="asset.name == 'www.bin'">
                     <a style="text-decoration: underline;" target="_blank"
-                    [href]="latestPreRelease.html_url">{{latestPreRelease.name}}</a>
-                </h2>
-                <div class="ml-4" *ngFor="let asset of latestPreRelease.assets">
-                    <div *ngIf="asset.name == 'esp-miner.bin'">
-                        <a style="text-decoration: underline;" target="_blank"
-                            [href]="asset.browser_download_url">esp-miner.bin</a>
-                    </div>
-                    <div *ngIf="asset.name == 'www.bin'">
-                        <a style="text-decoration: underline;" target="_blank"
-                            [href]="asset.browser_download_url">www.bin</a>
-                    </div>
+                        [href]="asset.browser_download_url">www.bin</a>
                 </div>
-            </ng-container> 
+            </div>
+        </ng-container>
         </div>
     </div>
-    <div class="col-12 lg:col-6 xl:col-4">
-      <div class="card h-full">
+    <div class="col-12 lg:col-12 xl:col-4">
+      <div class="card">
           <h2>Update Website <span *ngIf="websiteUpdateProgress != null">{{websiteUpdateProgress}}%</span></h2>
 
           <p-fileUpload #websiteUpload [customUpload]="true" mode="basic" accept=".bin" (uploadHandler)="otaWWWUpdate($event)"
@@ -57,7 +39,7 @@
       </div>
     </div>
     <div class="col-12 lg:col-6 xl:col-4">
-        <div class="card h-full">
+        <div class="card">
             <h2>Update Firmware <span *ngIf="firmwareUpdateProgress != null">{{firmwareUpdateProgress}}%</span></h2>
             <!-- <input type="file" id="file" (change)="otaUpdate($event)" accept=".bin"> -->
             <p-fileUpload #firmwareUpload [customUpload]="true" mode="basic" accept=".bin" (uploadHandler)="otaUpdate($event)"

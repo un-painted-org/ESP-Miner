@@ -3,25 +3,25 @@
 #define INTERNAL_OFFSET 5 //degrees C
 
 
-esp_err_t Thermal_init(DeviceModel device_model) {
+esp_err_t Thermal_init(DeviceModel device_model, bool polarity) {
         //init the EMC2101, if we have one
     switch (device_model) {
         case DEVICE_LV07:
             TMP1075_init();
-            EMC2302_init(); 
+            EMC2302_init(polarity);
             break;
         case DEVICE_MAX:
         case DEVICE_ULTRA:
         case DEVICE_SUPRA:
-            EMC2101_init();
+            EMC2101_init(polarity);
             break;
         case DEVICE_GAMMA:
-            EMC2101_init();
+            EMC2101_init(polarity);
             EMC2101_set_ideality_factor(EMC2101_IDEALITY_1_0319);
             EMC2101_set_beta_compensation(EMC2101_BETA_11);
             break;
         case DEVICE_GAMMATURBO:
-            EMC2103_init();
+            EMC2103_init(polarity);
             break;
         default:
     }

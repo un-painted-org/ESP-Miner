@@ -5,6 +5,7 @@ import { ThemeService } from '../../services/theme.service';
 export interface AppConfig {
     inputStyle: string;
     colorScheme: string;
+    theme: string;
     ripple: boolean;
     menuMode: string;
     scale: number;
@@ -64,6 +65,7 @@ export class LayoutService {
         inputStyle: 'outlined',
         menuMode: 'static',
         colorScheme: 'dark',
+        theme: 'dark',
         scale: 14,
     };
 
@@ -78,7 +80,10 @@ export class LayoutService {
         menuHoverActive: false,
     };
 
+    private configUpdate = new Subject<AppConfig>();
     private overlayOpen = new Subject<any>();
+
+    configUpdate$ = this.configUpdate.asObservable();
     overlayOpen$ = this.overlayOpen.asObservable();
 
     constructor(private themeService: ThemeService) {
@@ -89,6 +94,7 @@ export class LayoutService {
                     this._config = {
                         ...this._config,
                         colorScheme: settings.colorScheme,
+                        theme: settings.theme
                     };
                     // Apply accent colors if they exist
                     if (settings.accentColors) {
@@ -100,6 +106,7 @@ export class LayoutService {
                     // Save default red dark theme if no settings exist
                     this.themeService.saveThemeSettings({
                         colorScheme: 'dark',
+                        theme: 'dark',
                         accentColors: {
                             '--primary-color': '#F80421',
                             '--primary-color-text': '#ffffff',
@@ -142,6 +149,7 @@ export class LayoutService {
             const config = this.config();
             this.changeTheme();
             this.changeScale(config.scale);
+            this.onConfigUpdate();
         });
     }
 
@@ -187,6 +195,21 @@ export class LayoutService {
 
     isMobile() {
         return !this.isDesktop();
+    }
+
+    onConfigUpdate() {
+        this._config = { ...this.config() };
+        this.configUpdate.next(this.config());
+        // Save theme settings to NVS
+        this.themeService.saveThemeSettings({
+            colorScheme: this._config.colorScheme,
+            theme: this._config.theme
+        }).subscribe(
+            () => {},
+            error => console.error('Error saving theme settings:', error)
+        );
+        // Apply theme changes immediately
+        this.changeTheme();
     }
 
     changeTheme() {

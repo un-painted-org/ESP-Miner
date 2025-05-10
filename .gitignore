@@ -29,7 +29,3 @@ components/components/*
 config.bin
 config.cvs
 managed_components/*
-
-# System files
-.DS_Store
-Thumbs.db

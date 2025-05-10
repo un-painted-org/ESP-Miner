@@ -9,7 +9,6 @@ export interface ISystemInfo {
 
     flipscreen: number;
     invertscreen: number;
-    displayTimeout: number;
     power: number,
     voltage: number,
     current: number,
@@ -45,9 +44,9 @@ export interface ISystemInfo {
     version: string,
     idfVersion: string,
     boardVersion: string,
+    invertfanpolarity: number,
     autofanspeed: number,
     fanspeed: number,
-    temptarget: number,
     fanrpm: number,
     coreVoltageActual: number,
 

@@ -25,7 +25,7 @@ export class GithubUpdateService {
     return this.httpClient.get<GithubRelease[]>(
       'https://api.github.com/repos/un-painted-org/esp-miner/releases'
     ).pipe(
-      map((releases: GithubRelease[]) => releases)
+      map((releases: GithubRelease[]) => releases.filter((release: GithubRelease) => !release.prerelease))
     );
   }
 
