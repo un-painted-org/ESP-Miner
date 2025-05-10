@@ -8,6 +8,7 @@
 #include "screen.h"
 #include "nvs_config.h"
 #include "display.h"
+#include "esp_ota_ops.h"
 
 typedef enum {
     SCR_SELF_TEST,
