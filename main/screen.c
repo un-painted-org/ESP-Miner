@@ -217,19 +217,18 @@ static lv_obj_t * create_scr_urls(SystemModule * module) {
 }
 
 static lv_obj_t * create_scr_unpainted(SystemModule * module) {
+    const esp_app_desc_t *app_desc = esp_app_get_description();
+
     lv_obj_t * scr = lv_obj_create(NULL);
 
     lv_obj_set_flex_flow(scr, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_flex_align(scr, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
-   // lv_obj_t *label1 = lv_label_create(scr);
-   // lv_label_set_text(label1, "-------------");
+    lv_obj_t *label1 = lv_label_create(scr);
+    lv_label_set_text(label1, "  unpainted  ");
 
     lv_obj_t *label2 = lv_label_create(scr);
-    lv_label_set_text(label2, "  unpainted  ");
-
-   // lv_obj_t *label3 = lv_label_create(scr);
-   // lv_label_set_text(label3, "-------------");
+    lv_label_set_text(label2, app_desc->version);
 
     return scr;
 }
