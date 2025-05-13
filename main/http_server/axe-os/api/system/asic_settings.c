@@ -52,7 +52,6 @@ esp_err_t GET_system_asic(httpd_req_t *req)
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(550));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(600));
         cJSON_AddItemToArray(freqOptions, cJSON_CreateNumber(625));
-
         // BM1370 voltage options
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1000));
         cJSON_AddItemToArray(voltageOptions, cJSON_CreateNumber(1060));
