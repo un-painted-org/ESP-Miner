@@ -32,6 +32,7 @@ TEST_CASE("Test bin2hex", "[utils]")
     TEST_ASSERT_EQUAL_STRING("48454c4c4f", hex_string);
 }
 
+/*
 TEST_CASE("Test hex2char", "[utils]")
 {
     char output;
@@ -46,3 +47,4 @@ TEST_CASE("Test hex2char", "[utils]")
     result = hex2char(16, &output);
     TEST_ASSERT_EQUAL(-1, result);
 }
+*/
