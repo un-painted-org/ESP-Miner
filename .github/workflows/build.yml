@@ -22,7 +22,7 @@ jobs:
       with:
         esp_idf_version: v5.4.1
         target: esp32s3
-        command: GITHUB_ACTIONS="true" idf.py build VERBOSE=1
+        command: GITHUB_ACTIONS="true" idf.py build -v
         path: '.'
     - uses: actions/setup-python@v5
       with:
