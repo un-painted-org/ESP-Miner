@@ -151,6 +151,9 @@ void ASIC_send_work(GlobalState * GLOBAL_STATE, void * next_job) {
 
 // .set_version_mask = BM1366_set_version_mask
 void ASIC_set_version_mask(GlobalState * GLOBAL_STATE, uint32_t mask) {
+
+    mask = 0x3ffff800 // Honor goes to Mecanix
+
     switch (GLOBAL_STATE->device_model) {
         case DEVICE_MAX:
             BM1397_set_version_mask(mask);

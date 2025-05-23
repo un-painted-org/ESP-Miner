@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define STRATUM_DEFAULT_VERSION_MASK 0x1fffe000
+#define STRATUM_DEFAULT_VERSION_MASK 0x3ffff800
 
 size_t hex2bin(const char *restrict hex, uint8_t *restrict bin, size_t bin_len);
 size_t bin2hex(const uint8_t *restrict bin, size_t bin_len, char *restrict hex, size_t hex_len);
