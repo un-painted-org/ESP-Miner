@@ -141,7 +141,7 @@ void BM1366_set_version_mask(uint32_t version_mask)
     int versions_to_roll = version_mask >> 13;
     uint8_t version_byte0 = (versions_to_roll >> 8);
     uint8_t version_byte1 = (versions_to_roll & 0xFF); 
-    uint8_t version_cmd[] = {0x00, 0xA4, 0x90, 0x00, version_byte0, version_byte1};
+    //uint8_t version_cmd[] = {0x00, 0xA4, 0x90, 0x00, version_byte0, version_byte1};
 
     uint8_t version_cmd[] = {0x00, 0xA4, 0x90, 0x00, 0x7F, 0xFF};  // 0x3FFFF800
     _send_BM1366(TYPE_CMD | GROUP_ALL | CMD_WRITE, version_cmd, 6, BM1366_SERIALTX_DEBUG);
