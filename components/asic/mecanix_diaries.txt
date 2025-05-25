@@ -1,0 +1,101 @@
+Ticket Mask    ASIC Serial Bytes    Diff.    Binary Filter (Leading 1s)
+0x80000000    00 14 00 00 00 80    1    10000000 00000000 00000000 00000000
+0xC0000000    00 14 00 00 00 C0    4    11000000 00000000 00000000 00000000
+0xE0000000    00 14 00 00 00 E0    8    11100000 00000000 00000000 00000000
+0xF0000000    00 14 00 00 00 F0    16    11110000 00000000 00000000 00000000
+0xF8000000    00 14 00 00 00 F8    32    11111000 00000000 00000000 00000000
+0xFC000000    00 14 00 00 00 FC    64    11111100 00000000 00000000 00000000
+0xFE000000    00 14 00 00 00 FE    128    11111110 00000000 00000000 00000000
+0xFF000000    00 14 00 00 00 FF    256    11111111 00000000 00000000 00000000 <-- ESP MINER
+0xFF800000    00 14 00 00 80 FF    512    11111111 10000000 00000000 00000000
+0xFFC00000    00 14 00 00 C0 FF    1,024    11111111 11000000 00000000 00000000
+0xFFE00000    00 14 00 00 E0 FF    2,048    11111111 11100000 00000000 00000000
+0xFFF00000    00 14 00 00 F0 FF    4,096    11111111 11110000 00000000 00000000
+0xFFF80000    00 14 00 00 F8 FF    8,192    11111111 11111000 00000000 00000000
+0xFFFC0000    00 14 00 00 FC FF    16,384    11111111 11111100 00000000 00000000
+0xFFFE0000    00 14 00 00 FE FF    32,768    11111111 11111110 00000000 00000000
+0xFFFF0000    00 14 00 00 FF FF    65,536    11111111 11111111 00000000 00000000
+
+Version Mask
+1    0x00002000    1    0x0001
+2    0x00006000    3    0x0003
+3    0x0000E000    7    0x0007
+4    0x0001E000    15    0x000F
+5    0x0003E000    31    0x001F
+6    0x0007E000    63    0x003F
+7    0x000FE000    127    0x007F
+8    0x001FE000    255    0x00FF
+9    0x003FE000    511    0x01FF
+10    0x007FE000    1023    0x03FF
+11    0x00FFE000    2047    0x07FF
+12    0x01FFE000    4095    0x0FFF
+13    0x03FFE000    8191    0x1FFF
+14    0x07FFE000    16,383    0x3FFF
+15    0x0FFFE000    32,767    0x7FFF
+16    0x1FFFE000    65,535    0xFFFF <-- default
+17    0x3FFFE000    131,071    0x1FFFF
+18    0x7FFFE000    262,143    0x3FFFF
+19    0xFFFFE000    524,287    0x7FFFF
+
+void asic_set_ticket_mask(uint32_t ticket_mask) {
+ 
+    uint16_t mask_top_two_bytes = (ticket_mask >> 16) & 0xFFFF;
+    uint8_t xx = mask_top_two_bytes & 0xFF;
+    uint8_t yy = (mask_top_two_bytes >> 8) & 0xFF;
+ 
+    uint8_t packet[6] = {0x00, 0x14, 0x00, 0x00, xx, yy}; //ticket mask asic register 0x14
+    _send_BM1370((TYPE_CMD | GROUP_ALL | CMD_WRITE), packet, 6, BM1370_SERIALTX_DEBUG);
+    //DEBUG
+    printf("Sent: 00 14 00 00 %02X %02X (Ticket mask: 0x%"PRIX32")\n", xx, yy, ticket_mask);
+} 
+Usage:
+asic_set_ticket_mask(0xFF00000); //Esp Miner equivalent
+
+Ticket Mask 0xC0000000 & Version Mask 0x007FE000 really unleashes hashrates. <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+This new asic_set_ticket_mask() function replaces this call:
+https://github.com/bitaxeorg/ESP-Miner/blob/47c8b8b369bc7683dea4cb4fdd237d52c4b32416/components/asic/bm1370.c#L273C5-L273C48
+
+---------------------------------
+FILES asic_tweaks.c/.h
+
+Usage:
+set_ticket_mask(256); //Param mapped to difficulty (easier to understand, stratum diff ready too) //256 = ESP Miner
+set_version_mask(0x1FFFE000, true);
+
+I've added the calls in my UI so I can just hack up that BM1370 ASSic runtime. Same I do with Freq & mVolts.
+Hopefully friend @unpainted can do something similar for you guys on ESP Miner.
+Same code style; high-performance lookup tables, bypasses bit swapping and all that other cycle-wasting madness that ESP Miner is so good at lol
+Works flawlessly. Hack the puppy on the fly. >hashrates great now, can tweak for the conditions (high diff pools, Solo, Pooled, etc).
+BUT (but but)
+I still haven't confirmed whether that 6.01G I got was indeed luck, or the fact that I was using a lower Version Mask.
+Only Time can tell. Wish me luck!
+
+Works equally well on the BM1368. Just tried my quad hashboard with the same code.
+No idea about 1366s I can't try right now but I presume it works as good.
+Safe. Have at it.
+Next: ASICBoost implementation. I'll look into this.
+
+Confirmed BM1366 (Hex board). That's yet another situation when this 'asic tweak' comes in handy (multichips). Want that on a faster job switch than pool's default. Industry hacks... lots to learn
+
+
+The likes of Chat Gpt & Co Ltd knows all about nonce space and asic tech. They obv don't have the datasheet, tables and registers, however they grasp the concept of the hardware Version rolling and Ticketing better than I'll ever do in a lifetime. Ask'm!!
+
+Be mindful that what works ootb for a single asic bitaxe doesn't for a multichip unit. Same is true for Solo -vs- Pooled Mining. Day and Night different set-up requirements. In that context; being able to tweak at the hardware level is not a feature, but more or less vital rather 😉
+What I'm trying to say is "Do It". Good luck and May You Find Inspiration!!
+
+All right.
+What are the best values for a single BM1370 in a solo mining job? Or how would you approach this task?
+Mecanix
+ — 
+22:28
+I've just put up the facilitation to learn all that myself. That was Step One in my quest to have the ability to tweak the puppies runtime. The next step will be to gather intel on their behaviors and hopefully answer your question 😉
+
+Solo mining on a single chip unit --> lowest possible ticket mask (don't block anything) and highest nonce space.
+Solo Multichips --> Remain low ticket however chop your nonce space in half (overhaul that's the idea behind).
+Different set-up for different scenarios. If I understood how this cut-throat asic business works, and why each pools has their own secret lil closed source firmware. That's what they do with them... hacks the BM puppies. 
+Mecanix
+ — 
+22:45
+@unpainted/Everyone - Please share setup that gives out better score results for the BM1370 <--crime culprit #1. Urgent.
+Remember, its architecture pipeline's optimized for efficiency. Not raw speed :/

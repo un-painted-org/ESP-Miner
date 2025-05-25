@@ -958,6 +958,15 @@ esp_err_t start_rest_server(void * pvParameters)
     .user_ctx = rest_context
     };
     httpd_register_uri_handler(server, &system_asic_get_uri);
+    
+    /* URI handler for fetching system asicmask values */
+    httpd_uri_t system_asicmask_get_uri = {
+    .uri = "/api/system/asicmask", 
+    .method = HTTP_GET, 
+    .handler = GET_system_asicmask, 
+    .user_ctx = rest_context
+    };
+    httpd_register_uri_handler(server, &system_asicmask_get_uri);
 
     /* URI handler for WiFi scan */
     httpd_uri_t wifi_scan_get_uri = {

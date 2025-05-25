@@ -8,6 +8,7 @@ SRCS
     "crc.c"
     "common.c"
     "asic.c"
+    "asic_tweaks.c"
     "frequency_transition_bmXX.c"
 
 INCLUDE_DIRS 
