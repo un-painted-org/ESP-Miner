@@ -65,6 +65,9 @@ export class SystemService {
           fanspeed: 100,
           temptarget: 60,
           fanrpm: 0,
+          
+          ticketMaskDiff: 256,
+          versionMask: 536862720,
 
           boardtemp1: 30,
           boardtemp2: 40,
