@@ -334,8 +334,9 @@ export class EditComponent implements OnInit, OnDestroy {
     const options = this.versionMaskOptions.map(versionMask => {
       // Check if this is a default ticket maks diff 
       const isDefault = this.defaultVersionMask === versionMask;
+      const hexValue = versionMask.toString(16); // Umwandlung in hexadezimale Form
       return {
-        name: isDefault ? `${versionMask} (default)` : `${versionMask}`,
+        name: isDefault ? `${versionMask} - 0x${hexValue} (default)` : `${versionMask} - 0x${hexValue}`,
         value: versionMask
       };
     });
@@ -345,8 +346,9 @@ export class EditComponent implements OnInit, OnDestroy {
 
     // If current version mask exists and isn't in the options
     if (currentVersionMask && !options.some(opt => opt.value === currentVersionMask)) {
+      const hexCurrentValue = currentVersionMask.toString(16); // Umwandlung in hexadezimale Form
       options.push({
-        name: `${currentVersionMask} (Custom)`,
+        name: `${currentVersionMask} - 0x${hexCurrentValue} (Custom)`,
         value: currentVersionMask
       });
       // Sort options by version mask  value
