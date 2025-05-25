@@ -143,8 +143,8 @@ export class SystemService {
   }
 
   public getAsicMaskSettings(uri: string = ''): Observable<{
-    frequencyOptions: number[];
-    voltageOptions: number[];
+    ticketMaskDiffOptions: number[];
+    versionMaskOptions: number[];
   }> {
     if (environment.production) {
       return this.httpClient.get(`${uri}/api/system/asic/mask`) as Observable<{

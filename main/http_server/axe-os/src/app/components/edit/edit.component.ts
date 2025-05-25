@@ -141,6 +141,8 @@ export class EditComponent implements OnInit, OnDestroy {
           ]],
           coreVoltage: [info.coreVoltage, [Validators.required]],
           frequency: [info.frequency, [Validators.required]],
+          ticketMaskDiff: [info.ticketMaskDiff, [Validators.required]],
+          versionMask: [info.versionMask, [Validators.required]],
           autofanspeed: [info.autofanspeed == 1, [Validators.required]],
           fanspeed: [info.fanspeed, [Validators.required]],
           temptarget: [info.temptarget, [Validators.required]],
