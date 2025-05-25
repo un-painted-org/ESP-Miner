@@ -53,7 +53,7 @@ asic_set_ticket_mask(0xFF00000); //Esp Miner equivalent
 
 Ticket Mask 0xC0000000 & Version Mask 0x007FE000 really unleashes hashrates. <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-This new asic_set_ticket_mask() function replaces this call:
+This new asic_set_ticket_mask() function replaces this call: BM1370_set_job_difficulty_mask()
 https://github.com/bitaxeorg/ESP-Miner/blob/47c8b8b369bc7683dea4cb4fdd237d52c4b32416/components/asic/bm1370.c#L273C5-L273C48
 
 ---------------------------------

@@ -7,6 +7,9 @@
 // Function to handle the /api/system/asic endpoint
 esp_err_t GET_system_asic(httpd_req_t *req);
 
+// Function to handle the /api/system/asicmask endpoint
+esp_err_t GET_system_asicmask(httpd_req_t *req);
+
 // Initialize the ASIC API with the global state
 void asic_api_init(GlobalState *global_state);
 

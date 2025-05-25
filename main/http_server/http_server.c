@@ -961,7 +961,7 @@ esp_err_t start_rest_server(void * pvParameters)
     
     /* URI handler for fetching system asicmask values */
     httpd_uri_t system_asicmask_get_uri = {
-    .uri = "/api/system/asicmask", 
+    .uri = "/api/system/asic/mask", 
     .method = HTTP_GET, 
     .handler = GET_system_asicmask, 
     .user_ctx = rest_context
