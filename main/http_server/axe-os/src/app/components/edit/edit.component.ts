@@ -33,6 +33,9 @@ export class EditComponent implements OnInit, OnDestroy {
   public frequencyOptions: number[] = [];
   public voltageOptions: number[] = [];
 
+  public ticketMaskDiffOptions: number[] = [];
+  public versionMaskOptions: number[] = [];
+
   // Default values for different ASIC models
   private defaultFrequencies: Record<eASICModel, number> = {
     [eASICModel.BM1366]: 485,
@@ -47,6 +50,9 @@ export class EditComponent implements OnInit, OnDestroy {
     [eASICModel.BM1370]: 1150,
     [eASICModel.BM1397]: 1400
   };
+
+  private defaultTicketMaskDiff: number = 256;
+  private defaultVersionMask: number = 536862720;
 
   private destroy$ = new Subject<void>();
 
@@ -98,18 +104,22 @@ export class EditComponent implements OnInit, OnDestroy {
     // Fetch both system info and ASIC settings in parallel
     forkJoin({
       info: this.systemService.getInfo(this.uri),
-      asicSettings: this.systemService.getAsicSettings(this.uri)
+      asicSettings: this.systemService.getAsicSettings(this.uri),
+      asicMaskSettings: this.systemService.getAsicMaskSettings(this.uri)
     })
     .pipe(
       this.loadingService.lockUIUntilComplete(),
       takeUntil(this.destroy$)
     )
-    .subscribe(({ info, asicSettings }) => {
+    .subscribe(({ info, asicSettings, asicMaskSettings }) => {
       this.ASICModel = info.ASICModel;
 
       // Store the frequency and voltage options from the API
       this.frequencyOptions = asicSettings.frequencyOptions;
       this.voltageOptions = asicSettings.voltageOptions;
+
+      this.ticketMaskDiffOptions = asicMaskSettings.ticketMaskDiffOptions;
+      this.versionMaskOptions = asicMaskSettings.versionMaskOptions;
 
       // Check if overclock is enabled in NVS
       if (info.overclockEnabled === 1) {
@@ -282,4 +292,65 @@ export class EditComponent implements OnInit, OnDestroy {
     return options;
   }
 
+  getTicketMaskDiff() {
+    if (!this.ticketMaskDiffOptions.length) {
+      return [];
+    }
+
+    // Convert ticket maks diff options from API to dropdown format
+    const options = this.ticketMaskDiffOptions.map(ticketMaskDiff => {
+      // Check if this is a default ticket maks diff 
+      const isDefault = this.defaultTicketMaskDiff === ticketMaskDiff;
+      return {
+        name: isDefault ? `${ticketMaskDiff} (default)` : `${ticketMaskDiff}`,
+        value: ticketMaskDiff
+      };
+    });
+
+    // Get current ticket maks diff value from form
+    const currentTicketMaskDiff = this.form?.get('ticketMaskDiff')?.value;
+
+    // If current ticket maks diff exists and isn't in the options
+    if (currentTicketMaskDiff && !options.some(opt => opt.value === currentTicketMaskDiff)) {
+      options.push({
+        name: `${currentTicketMaskDiff} (Custom)`,
+        value: currentTicketMaskDiff
+      });
+      // Sort options by ticket maks diff value
+      options.sort((a, b) => a.value - b.value);
+    }
+
+    return options;
+  }
+
+  getVersionMask() {
+    if (!this.versionMaskOptions.length) {
+      return [];
+    }
+
+    // Convert version mask options from API to dropdown format
+    const options = this.versionMaskOptions.map(versionMask => {
+      // Check if this is a default ticket maks diff 
+      const isDefault = this.defaultVersionMask === versionMask;
+      return {
+        name: isDefault ? `${versionMask} (default)` : `${versionMask}`,
+        value: versionMask
+      };
+    });
+
+    // Get current version mask value from form
+    const currentVersionMask = this.form?.get('versionMask')?.value;
+
+    // If current version mask exists and isn't in the options
+    if (currentVersionMask && !options.some(opt => opt.value === currentVersionMask)) {
+      options.push({
+        name: `${currentVersionMask} (Custom)`,
+        value: currentVersionMask
+      });
+      // Sort options by version mask  value
+      options.sort((a, b) => a.value - b.value);
+    }
+
+    return options;
+  }
 }

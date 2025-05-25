@@ -142,6 +142,24 @@ export class SystemService {
     }
   }
 
+  public getAsicMaskSettings(uri: string = ''): Observable<{
+    frequencyOptions: number[];
+    voltageOptions: number[];
+  }> {
+    if (environment.production) {
+      return this.httpClient.get(`${uri}/api/system/asic/mask`) as Observable<{
+        ticketMaskDiffOptions: number[];
+        versionMaskOptions: number[];
+      }>;
+    } else {
+      // Mock data for development
+      return of({
+        ticketMaskDiffOptions: [128,256,512],
+        versionMaskOptions: [2088960, 4186112, 8380416]
+      }).pipe(delay(1000));
+    }
+  }
+
   public getSwarmInfo(uri: string = ''): Observable<{ ip: string }[]> {
     return this.httpClient.get(`${uri}/api/swarm/info`) as Observable<{ ip: string }[]>;
   }

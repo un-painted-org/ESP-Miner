@@ -15,6 +15,18 @@
                 <p-dropdown class="col-12 md:col-10" [options]="getCoreVoltage()" optionLabel="name"
                     optionValue="value" formControlName="coreVoltage"></p-dropdown>
             </div>
+
+            <div class="field grid p-fluid">
+                <label class="col-12 mb-2 md:col-2 md:mb-0" htmlFor="ticketMaskDiff">Ticket Mask Difficulty</label>
+                <p-dropdown class="col-12 md:col-10" [options]="getTicketMaskDiff()" optionLabel="name"
+                    optionValue="value" formControlName="ticketMaskDiff"></p-dropdown>
+            </div>
+            
+            <div class="field grid p-fluid">
+                <label class="col-12 mb-2 md:col-2 md:mb-0" htmlFor="versionMask">Version Mask</label>
+                <p-dropdown class="col-12 md:col-10" [options]="getVersionMask()" optionLabel="name"
+                    optionValue="value" formControlName="versionMask"></p-dropdown>
+            </div>
         </ng-container>
 
         <ng-container *ngIf="settingsUnlocked === true">
@@ -30,6 +42,19 @@
                 <label htmlFor="coreVoltage" class="col-12 mb-2 md:col-2 md:mb-0">Core Voltage</label>
                 <div class="col-12 md:col-10">
                     <input pInputText id="coreVoltage" formControlName="coreVoltage" type="number" />
+                </div>
+            </div>
+
+            <div class="field grid p-fluid">
+                <label class="col-12 mb-2 md:col-2 md:mb-0" htmlFor="ticketMaskDiff">Ticket Mask Difficulty</label>
+                <div class="col-12 md:col-10">
+                    <input pInputText id="ticketMaskDiff" formControlName="ticketMaskDiff" type="number" />
+                </div>
+            </div>
+            <div class="field grid p-fluid">
+                <label class="col-12 mb-2 md:col-2 md:mb-0" htmlFor="versionMask">Version Mask</label>
+                <div class="col-12 md:col-10">
+                    <input pInputText id="versionMask" formControlName="versionMask" type="number" />
                 </div>
             </div>
 
