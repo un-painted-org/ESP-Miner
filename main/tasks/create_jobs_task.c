@@ -35,9 +35,9 @@ void create_jobs_task(void *pvParameters)
         if (GLOBAL_STATE->new_stratum_version_rolling_msg) {
             ESP_LOGI(TAG, "Set chip version rolls %i", (int)(GLOBAL_STATE->version_mask >> 13));
             //(GLOBAL_STATE->ASIC_functions.set_version_mask)(GLOBAL_STATE->version_mask);
-            //ASIC_set_version_mask(GLOBAL_STATE, GLOBAL_STATE->version_mask);
+            ASIC_set_version_mask(GLOBAL_STATE, GLOBAL_STATE->version_mask);
 
-            ASIC_set_version_mask(GLOBAL_STATE->version_mask, true);
+            //ASIC_set_version_mask(GLOBAL_STATE->version_mask, true);
             GLOBAL_STATE->new_stratum_version_rolling_msg = false;
         }
 

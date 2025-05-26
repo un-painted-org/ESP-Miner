@@ -107,7 +107,7 @@ int ASIC_set_max_baud(GlobalState * GLOBAL_STATE) {
 }
 
 // .set_difficulty_mask_fn = BM1366_set_job_difficulty_mask,
-void ASIC_set_job_difficulty_mask(GlobalState * GLOBAL_STATE, uint8_t mask) {
+void ASIC_set_job_difficulty_mask(GlobalState * GLOBAL_STATE) {
     switch (GLOBAL_STATE->device_model) {
         case DEVICE_MAX:
             BM1397_set_job_difficulty_mask(mask);
@@ -150,7 +150,7 @@ void ASIC_send_work(GlobalState * GLOBAL_STATE, void * next_job) {
 }
 
 // .set_version_mask = BM1366_set_version_mask
-/*
+
 void ASIC_set_version_mask(GlobalState * GLOBAL_STATE, uint32_t mask) {
     switch (GLOBAL_STATE->device_model) {
         case DEVICE_MAX:
@@ -171,8 +171,9 @@ void ASIC_set_version_mask(GlobalState * GLOBAL_STATE, uint32_t mask) {
     return;
     }
 }
-*/
 
+
+/*
 //by Mecanix
 void ASIC_set_ticket_mask(uint32_t difficulty) {
 	
@@ -191,7 +192,9 @@ void ASIC_set_ticket_mask(uint32_t difficulty) {
     // DEBUG
     ESP_LOGI(TAG, "New ticket mask: %02X %02X %02X %02X %02X %02X (Difficulty: 0x%"PRIX32")", packet[0], packet[1], packet[2], packet[3], packet[4], packet[5], difficulty);
 }
+*/
 
+/*
 //by Mecanix
 void ASIC_set_version_mask(uint32_t value, bool is_direct_mask) {
 	
@@ -213,6 +216,7 @@ void ASIC_set_version_mask(uint32_t value, bool is_direct_mask) {
     // DEBUG
     ESP_LOGI(TAG, "New version mask: %02X %02X %02X %02X %02X %02X ", packet[0], packet[1], packet[2], packet[3], packet[4], packet[5]);
 }
+*/
 
 bool ASIC_set_frequency(GlobalState * GLOBAL_STATE, float target_frequency) {
     ESP_LOGI(TAG, "Setting ASIC frequency to %.2f MHz", target_frequency);
