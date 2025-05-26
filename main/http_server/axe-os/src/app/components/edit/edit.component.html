@@ -19,7 +19,7 @@
             <div class="field grid p-fluid">
                 <label class="col-12 mb-2 md:col-2 md:mb-0" htmlFor="ticketMaskDiff">Ticket Mask Difficulty</label>
                 <p-dropdown class="col-12 md:col-10" [options]="getTicketMaskDiff()" optionLabel="name"
-                    optionValue="value" formControlName="ticketMaskDiff"></p-dropdown>
+                    optionValue="value" formControlName="ticketMaskDiff" [disabled]="true"></p-dropdown>
             </div>
             
             <div class="field grid p-fluid">
@@ -48,7 +48,7 @@
             <div class="field grid p-fluid">
                 <label class="col-12 mb-2 md:col-2 md:mb-0" htmlFor="ticketMaskDiff">Ticket Mask Difficulty</label>
                 <div class="col-12 md:col-10">
-                    <input pInputText id="ticketMaskDiff" formControlName="ticketMaskDiff" type="number" />
+                    <input pInputText id="ticketMaskDiff" formControlName="ticketMaskDiff" type="number" disabled />
                 </div>
             </div>
             <div class="field grid p-fluid">

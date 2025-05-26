@@ -150,11 +150,8 @@ void ASIC_send_work(GlobalState * GLOBAL_STATE, void * next_job) {
 }
 
 // .set_version_mask = BM1366_set_version_mask
+/*
 void ASIC_set_version_mask(GlobalState * GLOBAL_STATE, uint32_t mask) {
-    
-    ASIC_set_version_mask(mask, true);
-
-    /*
     switch (GLOBAL_STATE->device_model) {
         case DEVICE_MAX:
             BM1397_set_version_mask(mask);
@@ -173,8 +170,8 @@ void ASIC_set_version_mask(GlobalState * GLOBAL_STATE, uint32_t mask) {
         default:
     return;
     }
-    */
 }
+*/
 
 //by Mecanix
 void ASIC_set_ticket_mask(uint32_t difficulty) {
