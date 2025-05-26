@@ -107,7 +107,7 @@ int ASIC_set_max_baud(GlobalState * GLOBAL_STATE) {
 }
 
 // .set_difficulty_mask_fn = BM1366_set_job_difficulty_mask,
-void ASIC_set_job_difficulty_mask(GlobalState * GLOBAL_STATE) {
+void ASIC_set_job_difficulty_mask(GlobalState * GLOBAL_STATE, uint8_t mask) {
     switch (GLOBAL_STATE->device_model) {
         case DEVICE_MAX:
             BM1397_set_job_difficulty_mask(mask);

@@ -47,7 +47,7 @@ void ASIC_task(void *pvParameters)
             // multi asic miner use statum diff as ticket mask diff
             if (chips_expected > 1){
                 //ASIC_set_ticket_mask(GLOBAL_STATE->stratum_difficulty);
-                ASIC_set_job_difficulty_mask(GLOBAL_STATE);
+                ASIC_set_job_difficulty_mask(GLOBAL_STATE, GLOBAL_STATE->stratum_difficulty);
             }
             //else: single asic miner remain at ticket mask diff default = 256
 
