@@ -9,7 +9,6 @@ SRCS
     "common.c"
     "asic.c"
     "frequency_transition_bmXX.c"
-#    "asic_tweaks.c"
 
 INCLUDE_DIRS 
     "include"

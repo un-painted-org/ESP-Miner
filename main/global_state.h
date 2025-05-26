@@ -131,7 +131,6 @@ typedef struct
     uint32_t stratum_difficulty;
     uint32_t version_mask;
     bool new_stratum_version_rolling_msg;
- //   bool new_asic_tweak_msg;
 
     int sock;
 

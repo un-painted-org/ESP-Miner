@@ -4,7 +4,7 @@
 
 AsicMaskEntry_t AsicMaskEntry;
 
-void set_ticket_mask(uint32_t difficulty) {
+void ASIC_set_ticket_mask(uint32_t difficulty) {
 	
     const AsicMaskEntry_t *entry = NULL;
     for (int i = 0; i < TICKET_MASK_TABLE_SIZE; i++) {
@@ -19,12 +19,12 @@ void set_ticket_mask(uint32_t difficulty) {
     _send(TYPE_CMD | GROUP_ALL | CMD_WRITE, packet, 6, SERIALTX_DEBUG);
     
     // DEBUG
-    printf("TICKET MASK: 00 14 00 00 %02X %02X (Difficulty: 0x%"PRIX32") \r\n", 
-    	entry->asic_bytes[0], entry->asic_bytes[1], difficulty);
+    //printf("TICKET MASK: 00 14 00 00 %02X %02X (Difficulty: 0x%"PRIX32") \r\n", 
+    //	entry->asic_bytes[0], entry->asic_bytes[1], difficulty);
 }
 
 
-void set_version_mask(uint32_t value, bool is_direct_mask) {
+void ASIC_set_version_mask(uint32_t value, bool is_direct_mask) {
 	
     const AsicMaskEntry_t *entry = NULL;
     uint32_t roll_count = is_direct_mask ? (value >> 13) : value;
@@ -42,6 +42,6 @@ void set_version_mask(uint32_t value, bool is_direct_mask) {
     _send(TYPE_CMD | GROUP_ALL | CMD_WRITE, packet, 6, SERIALTX_DEBUG);
 
     // DEBUG
-    printf("VERSION MASK: 00 A4 90 00 %02X %02X (Mask: 0x%"PRIX32") \r\n", 
-    	entry->asic_bytes[0], entry->asic_bytes[1], entry->mask);
+    //printf("VERSION MASK: 00 A4 90 00 %02X %02X (Mask: 0x%"PRIX32") \r\n", 
+    //	entry->asic_bytes[0], entry->asic_bytes[1], entry->mask);
 }

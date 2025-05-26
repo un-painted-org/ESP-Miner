@@ -151,6 +151,10 @@ void ASIC_send_work(GlobalState * GLOBAL_STATE, void * next_job) {
 
 // .set_version_mask = BM1366_set_version_mask
 void ASIC_set_version_mask(GlobalState * GLOBAL_STATE, uint32_t mask) {
+    
+    ASIC_set_version_mask(mask, true);
+
+    /*
     switch (GLOBAL_STATE->device_model) {
         case DEVICE_MAX:
             BM1397_set_version_mask(mask);
@@ -169,6 +173,48 @@ void ASIC_set_version_mask(GlobalState * GLOBAL_STATE, uint32_t mask) {
         default:
     return;
     }
+    */
+}
+
+//by Mecanix
+void ASIC_set_ticket_mask(uint32_t difficulty) {
+	
+    const AsicMaskEntry_t *entry = NULL;
+    for (int i = 0; i < TICKET_MASK_TABLE_SIZE; i++) {
+        if (TICKET_MASK_TABLE[i].difficulty >= difficulty) {
+            entry = &TICKET_MASK_TABLE[i];
+            break;
+        }
+    }
+    if (!entry) entry = &TICKET_MASK_TABLE[TICKET_MASK_TABLE_SIZE - 1]; //Fallback
+
+    uint8_t packet[6] = {0x00, 0x14, 0x00, 0x00, entry->asic_bytes[0], entry->asic_bytes[1]};
+    _send(TYPE_CMD | GROUP_ALL | CMD_WRITE, packet, 6, SERIALTX_DEBUG);
+    
+    // DEBUG
+    ESP_LOGI(TAG, "New ticket mask: %02X %02X %02X %02X %02X %02X (Difficulty: 0x%"PRIX32")", packet[0], packet[1], packet[2], packet[3], packet[4], packet[5], difficulty);
+}
+
+//by Mecanix
+void ASIC_set_version_mask(uint32_t value, bool is_direct_mask) {
+	
+    const AsicMaskEntry_t *entry = NULL;
+    uint32_t roll_count = is_direct_mask ? (value >> 13) : value;
+
+    // Find closest match (>= roll_count)
+    for (int i = 0; i < VERSION_MASK_TABLE_SIZE; i++) {
+        if (VERSION_MASK_TABLE[i].roll_count >= roll_count) {
+            entry = &VERSION_MASK_TABLE[i];
+            break;
+        }
+    }
+    if (!entry) entry = &VERSION_MASK_TABLE[VERSION_MASK_TABLE_SIZE - 1]; //Fallback
+
+    uint8_t packet[6] = {0x00, 0xA4, 0x90, 0x00, entry->asic_bytes[0], entry->asic_bytes[1]};
+    _send(TYPE_CMD | GROUP_ALL | CMD_WRITE, packet, 6, SERIALTX_DEBUG);
+
+    // DEBUG
+    ESP_LOGI(TAG, "New version mask: %02X %02X %02X %02X %02X %02X ", packet[0], packet[1], packet[2], packet[3], packet[4], packet[5]);
 }
 
 bool ASIC_set_frequency(GlobalState * GLOBAL_STATE, float target_frequency) {

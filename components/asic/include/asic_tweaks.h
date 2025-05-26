@@ -61,8 +61,8 @@ static const AsicMaskEntry_t VERSION_MASK_TABLE[] = {
 #define VERSION_MASK_TABLE_SIZE (sizeof(VERSION_MASK_TABLE) / sizeof(VERSION_MASK_TABLE[0]))
 
 
-void set_ticket_mask(uint32_t difficulty);
-void set_version_mask(uint32_t value, bool is_direct_mask);
+void ASIC_set_ticket_mask(uint32_t difficulty);
+void ASIC_set_version_mask(uint32_t value, bool is_direct_mask);
 
 
 #endif /* INC_ASIC_ASIC_TWEAKS_H_ */

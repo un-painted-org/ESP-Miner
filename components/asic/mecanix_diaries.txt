@@ -99,3 +99,36 @@ Mecanix
 22:45
 @unpainted/Everyone - Please share setup that gives out better score results for the BM1370 <--crime culprit #1. Urgent.
 Remember, its architecture pipeline's optimized for efficiency. Not raw speed :/
+
+-----------
+----------- HASHRATE
+-----------
+For the correct hashrate compute, you need to relocate the call inside the "valid nonce" loop:
+https://github.com/bitaxeorg/ESP-Miner/blob/0e035172fe50a9ef6af58be9b14262b2f0c5e3d5/main/tasks/asic_result_task.c#L65
+^ that line, move call to line [58]
+And rewrite the hashrate function with this one: hr_test.c <<<<<<<<<<<<
+Obviously globally structured for my FW, but a God-Like dev the like of @unpainted can pull this one off easy
+esp_miner->historical_hashrate[index] = esp_miner->asic_difficulty; <-- ticket scaled
+
+Oh and I didn't wrote that hashrate compute. No idea who did (prolly skot?), but it works fine. Slow ramping init, but it works and super accurate. 
+
+
+@unpainted Don't bother on the hashrate implementation, I've just noticed it doesn't work on high diff, although it gives the impression that it does.
+Just notice "4294967296", art of coding when tired!! That's 2^32 (full nonce space)... infamous 256 hardcoded ESP Miner biting again.
+I'll re-write it all when rested. Need a day to recover. I'll shout.
+
+-----------
+----------- set_ticket_mask()
+
+@unpainted In your experimental firmware, don't forget to call/update set_ticket_mask() when pool/stratum difficulty changes. That's called via asic_task.c 
+Example: 
+set_ticket_mask(esp_miner->stratum_difficulty);
+And that's all. You'll end up with an Industrial-Grade equivalent Bitcoin Miner. That's how it's done!
+
+And, even and steady job distribution between asics too. That was not the case before (aka when on 256 hardcoded).
+
+Verdict:
+Multi chip == pool difficulty mandatory
+Single chip == 256 hardcoded ok'ish (I guess)
+⚠️ BEWARE ⚠️  Total beginner here I remind. Don't listen to me and consult with a professional before going LIVE. 
+Just sharing findings that's all...

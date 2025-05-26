@@ -8,6 +8,7 @@
 #include "freertos/task.h"
 
 #include "asic.h"
+#include "asic_tweaks.h"
 
 static const char *TAG = "ASIC_task";
 
@@ -41,6 +42,14 @@ void ASIC_task(void *pvParameters)
         {
             ESP_LOGI(TAG, "New pool difficulty %lu", next_bm_job->pool_diff);
             GLOBAL_STATE->stratum_difficulty = next_bm_job->pool_diff;
+
+            uint8_t chips_expected = ASIC_get_asic_count(GLOBAL_STATE);
+            // multi asic miner use statum diff as ticket mask diff
+            if (chips_expected > 1}{
+                ASIC_set_ticket_mask(GLOBAL_STATE->stratum_difficulty);
+            }
+            //else: single asic miner remain at ticket mask diff default = 256
+
         }
 
         //(*GLOBAL_STATE->ASIC_functions.send_work_fn)(GLOBAL_STATE, next_bm_job); // send the job to the ASIC
