@@ -172,6 +172,27 @@ void ASIC_set_version_mask(GlobalState * GLOBAL_STATE, uint32_t mask) {
     }
 }
 
+void ASIC_set_ticket_mask(GlobalState * GLOBAL_STATE, uint32_t difficulty) {
+    switch (GLOBAL_STATE->device_model) {
+        case DEVICE_MAX:
+            //BM1397_set_ticket_mask(difficulty);
+            break;
+        case DEVICE_ULTRA:
+        case DEVICE_LV07:
+            BM1366_set_ticket_mask(difficulty);
+            break;
+        case DEVICE_SUPRA:
+            //BM1368_set_ticket_mask(difficulty);
+            break;
+        case DEVICE_GAMMA:
+        case DEVICE_GAMMATURBO:
+            //BM1370_set_ticket_mask(difficulty);
+            break;
+        default:
+    return;
+    }
+}
+
 
 /*
 //by Mecanix

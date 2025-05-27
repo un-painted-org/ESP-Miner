@@ -158,6 +158,25 @@ void BM1366_set_version_mask(uint32_t version_mask)
     ESP_LOGI(TAG, "New version mask: %02X %02X %02X %02X %02X %02X ", packet[0], packet[1], packet[2], packet[3], packet[4], packet[5]);
 }
 
+void BM1366_set_ticket_mask(uint32_t difficulty)
+{
+    const AsicMaskEntry_t *entry = NULL;
+    for (int i = 0; i < TICKET_MASK_TABLE_SIZE; i++) {
+        if (TICKET_MASK_TABLE[i].difficulty >= difficulty) {
+            entry = &TICKET_MASK_TABLE[i];
+            break;
+        }
+    }
+    if (!entry) entry = &TICKET_MASK_TABLE[TICKET_MASK_TABLE_SIZE - 1]; //Fallback
+
+    uint8_t packet[6] = {0x00, 0x14, 0x00, 0x00, entry->asic_bytes[0], entry->asic_bytes[1]};
+    _send_BM1366(TYPE_CMD | GROUP_ALL | CMD_WRITE, packet, 6, BM1366_SERIALTX_DEBUG);
+    
+    // DEBUG
+    ESP_LOGI(TAG, "New ticket mask: %02X %02X %02X %02X %02X %02X (Difficulty: 0x%"PRIX32")", packet[0], packet[1], packet[2], packet[3], packet[4], packet[5], difficulty);
+
+}
+
 void BM1366_send_hash_frequency(float target_freq)
 {
     // default 200Mhz if it fails
