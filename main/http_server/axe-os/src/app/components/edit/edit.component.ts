@@ -294,7 +294,7 @@ export class EditComponent implements OnInit, OnDestroy {
     return options;
   }
 
-  getTicketMaskDiff() {
+  getStratumDiff() {
     if (!this.ticketMaskDiffOptions.length) {
       return [];
     }

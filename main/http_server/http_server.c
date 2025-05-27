@@ -462,7 +462,12 @@ static esp_err_t PATCH_update_settings(httpd_req_t * req)
     }
 
     /* TODO add PATCH ingest for ticketMaskDiff and versionMask
-    if ((item = cJSON_GetObjectItem(root, "ticketMaskDiff")) != NULL && item->valueint > 0) {
+    if ((item = cJSON_GetObjectItem(root, "stratumkDiff")) != NULL && item->valueint > 0) {
+        nvs_config_set_u16(NVS_CONFIG_ASIC_FREQ, item->valueint);
+    }
+    */
+        /* TODO add PATCH ingest for ticketMaskDiff and versionMask
+    if ((item = cJSON_GetObjectItem(root, "versionMask")) != NULL && item->valueint > 0) {
         nvs_config_set_u16(NVS_CONFIG_ASIC_FREQ, item->valueint);
     }
     */
