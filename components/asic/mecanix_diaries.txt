@@ -117,6 +117,23 @@ Oh and I didn't wrote that hashrate compute. No idea who did (prolly skot?), but
 Just notice "4294967296", art of coding when tired!! That's 2^32 (full nonce space)... infamous 256 hardcoded ESP Miner biting again.
 I'll re-write it all when rested. Need a day to recover. I'll shout.
 
+uint32_t ticket_mask = 128; //esp_miner->ticket_mask
+double scaling = ((double)ticket_mask) / 256.0;
+rolling_rate *= scaling;
+
+Well, that was easy. Why the dev didn't put it in at the first place, makes for some cool dropdown and tweaking, no?
+if (esp_miner->historical_hashrate_init < HISTORY_LENGTH) {
+    esp_miner->current_hashrate = hashrate;
+} else {
+    esp_miner->current_hashrate = ((esp_miner->current_hashrate * 
+        (1.0-SMOOTHING_FACTOR)) + (hashrate * SMOOTHING_FACTOR));
+}
+Usage:
+#define SMOOTHING_FACTOR 0.1  //10% weight
+// Fine-tuner  (0.05-0.2) for responsiveness!!
+
+#define HISTORY_LENGTH 69 <-
+
 -----------
 ----------- set_ticket_mask()
 

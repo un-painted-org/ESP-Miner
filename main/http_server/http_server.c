@@ -461,11 +461,11 @@ static esp_err_t PATCH_update_settings(httpd_req_t * req)
         nvs_config_set_u16(NVS_CONFIG_ASIC_FREQ, item->valueint);
     }
 
-/* TODO add PATCH ingest for ticketMaskDiff and versionMask
+    /* TODO add PATCH ingest for ticketMaskDiff and versionMask
     if ((item = cJSON_GetObjectItem(root, "ticketMaskDiff")) != NULL && item->valueint > 0) {
         nvs_config_set_u16(NVS_CONFIG_ASIC_FREQ, item->valueint);
     }
-*/
+    */
 
     if ((item = cJSON_GetObjectItem(root, "flipscreen")) != NULL) {
         nvs_config_set_u16(NVS_CONFIG_FLIP_SCREEN, item->valueint);
@@ -570,6 +570,7 @@ static esp_err_t GET_system_info(httpd_req_t * req)
     cJSON_AddStringToObject(root, "bestDiff", GLOBAL_STATE->SYSTEM_MODULE.best_diff_string);
     cJSON_AddStringToObject(root, "bestSessionDiff", GLOBAL_STATE->SYSTEM_MODULE.best_session_diff_string);
     cJSON_AddNumberToObject(root, "stratumDiff", GLOBAL_STATE->stratum_difficulty);
+    cJSON_AddNumberToObject(root, "versionMask", GLOBAL_STATE->version_mask);
 
     cJSON_AddNumberToObject(root, "isUsingFallbackStratum", GLOBAL_STATE->SYSTEM_MODULE.is_using_fallback);
 

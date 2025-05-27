@@ -310,7 +310,7 @@ export class EditComponent implements OnInit, OnDestroy {
     });
 
     // Get current ticket maks diff value from form
-    const currentTicketMaskDiff = this.form?.get('ticketMaskDiff')?.value;
+    const currentTicketMaskDiff = this.form?.get('stratumDiff')?.value;
 
     // If current ticket maks diff exists and isn't in the options
     if (currentTicketMaskDiff && !options.some(opt => opt.value === currentTicketMaskDiff)) {
