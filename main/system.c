@@ -212,7 +212,7 @@ void SYSTEM_notify_found_nonce(GlobalState * GLOBAL_STATE, double found_diff, ui
     SystemModule * module = &GLOBAL_STATE->SYSTEM_MODULE;
 
     uint32_t ticket_mask = GLOBAL_STATE->stratum_difficulty;
-    uint32_t version_mask = GLOBAL_STATE->version_mask;
+    uint32_t version_mask = GLOBAL_STATE->version_mask >> 13;
     
     // ACTUAL work represented by this nonce
     // e.g. 128 * 65536 * Double SHA-256 = 16,777,216 hashes
