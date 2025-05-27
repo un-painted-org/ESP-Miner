@@ -29,7 +29,7 @@
 static const char * TAG = "stratum_task";
 
 static StratumApiV1Message stratum_api_v1_message = {};
-static SystemTaskModule SYSTEM_TASK_MODULE = {.stratum_difficulty = 8192};
+static SystemTaskModule SYSTEM_TASK_MODULE = {.stratum_difficulty = 1024};
 
 static const char * primary_stratum_url;
 static uint16_t primary_stratum_port;
@@ -328,13 +328,12 @@ void stratum_task(void * pvParameters)
                 stratum_api_v1_message.mining_notification->difficulty = SYSTEM_TASK_MODULE.stratum_difficulty;
                 queue_enqueue(&GLOBAL_STATE->stratum_queue, stratum_api_v1_message.mining_notification);
             } else if (stratum_api_v1_message.method == MINING_SET_DIFFICULTY) {
-                if (stratum_api_v1_message.new_difficulty != SYSTEM_TASK_MODULE.stratum_difficulty) {
-                    SYSTEM_TASK_MODULE.stratum_difficulty = stratum_api_v1_message.new_difficulty;
-                    ESP_LOGI(TAG, "Set stratum difficulty: %ld", SYSTEM_TASK_MODULE.stratum_difficulty);
+                if (stratum_api_v1_message.new_difficulty != GLOBAL_STATE->stratum_difficulty) {
+                    GLOBAL_STATE->stratum_difficulty = stratum_api_v1_message.new_difficulty;
+                    ESP_LOGI(TAG, "Set stratum difficulty: %ld", GLOBAL_STATE->stratum_difficulty);
                 }
             } 
             /* unpainted: disable version mask set by pool
-            */
 
                 else if (stratum_api_v1_message.method == MINING_SET_VERSION_MASK ||
                     stratum_api_v1_message.method == STRATUM_RESULT_VERSION_MASK) {
@@ -342,6 +341,7 @@ void stratum_task(void * pvParameters)
                 ESP_LOGI(TAG, "Set version mask: %08lx", stratum_api_v1_message.version_mask);
                 GLOBAL_STATE->version_mask = stratum_api_v1_message.version_mask;
                 GLOBAL_STATE->new_stratum_version_rolling_msg = true;
+            */
             } else if (stratum_api_v1_message.method == STRATUM_RESULT_SUBSCRIBE) {
                 GLOBAL_STATE->extranonce_str = stratum_api_v1_message.extranonce_str;
                 GLOBAL_STATE->extranonce_2_len = stratum_api_v1_message.extranonce_2_len;
