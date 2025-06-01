@@ -11,7 +11,6 @@ REQUIRES
     "json"
     "mbedtls"
     "app_update"
-    "sha"
     "soc"
     "esp_private"
 )
