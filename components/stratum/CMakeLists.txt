@@ -12,5 +12,5 @@ REQUIRES
     "mbedtls"
     "app_update"
     "soc"
-    "esp_private"
+    "driver"
 )
