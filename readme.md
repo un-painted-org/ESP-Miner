@@ -13,8 +13,6 @@ Have a look at the wiki: https://github.com/un-painted-org/ESP-Miner/wiki
 
 *From parent repo*
 
-[![](https://dcbadge.vercel.app/api/server/3E8ca2dkcC)](https://discord.gg/3E8ca2dkcC)
-
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/skot/esp-miner/total)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/skot/esp-miner)
 ![GitHub contributors](https://img.shields.io/github/contributors/skot/esp-miner)
