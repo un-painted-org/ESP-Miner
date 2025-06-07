@@ -24,11 +24,11 @@ esp_err_t Thermal_init(DeviceConfig device_config)
     if (device_config.EMC2302) {
         ESP_LOGI(TAG, "Initializing EMC2302 and TMP1075 (Temperature offset: %dC)", device_config.emc_temp_offset);
         esp_err_t res_emc2302   = EMC2302_init();
-        esp_err_t res_tmp1075   = TMP1075_init());
+        esp_err_t res_tmp1075   = TMP1075_init();
 
         // return the first non-ESP_OK, or ESP_OK if all succeed
-        if (res_emc2302   != ESP_OK) return res_emc2302;
-        if (res_tmp1075_A != ESP_OK) return res_tmp1075_A;
+        if (res_emc2302 != ESP_OK) return res_emc2302;
+        if (res_tmp1075 != ESP_OK) return res_tmp1075;
 
         return ESP_OK;
     }
