@@ -80,7 +80,7 @@ static const FamilyConfig FAMILY_HEX         = { .name = "Hex",        .asic = A
 static const FamilyConfig FAMILY_SUPRA       = { .name = "Supra",      .asic = ASIC_BM1368, .asic_count = 1, .max_power = 40, .power_offset = 5,  .nominal_voltage = 5,  .swarm_color = "blue",   };
 static const FamilyConfig FAMILY_GAMMA       = { .name = "Gamma",      .asic = ASIC_BM1370, .asic_count = 1, .max_power = 40, .power_offset = 5,  .nominal_voltage = 5,  .swarm_color = "green",  };
 static const FamilyConfig FAMILY_GAMMA_TURBO = { .name = "GammaTurbo", .asic = ASIC_BM1370, .asic_count = 2, .max_power = 60, .power_offset = 10, .nominal_voltage = 12, .swarm_color = "cyan",   };
-static const FamilyConfig FAMILY_LV07        = { .name = "LV07",       .asic = ASIC_BM1366, .asic_count = 2, .max_power = 50, .power_offset = 6,  .nominal_voltage = 12, .swarm_color = "orange", };
+static const FamilyConfig FAMILY_LV07        = { .name = "LV07",       .asic = ASIC_BM1366, .asic_count = 2, .max_power = 50, .power_offset = 7,  .nominal_voltage = 12, .swarm_color = "orange", };
 
 static const DeviceConfig default_configs[] = {
     { .board_version = "2.2",  .family = FAMILY_MAX,         .EMC2101 = true,                                                                                     .DS4432U = true, .INA260 = true,  .plug_sense = true, .asic_enable = true, .power_consumption_target = 12, },
