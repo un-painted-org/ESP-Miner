@@ -53,3 +53,4 @@ uint16_t crc16_false(uint8_t *data, uint16_t len)
 
     return crc;
 }
+

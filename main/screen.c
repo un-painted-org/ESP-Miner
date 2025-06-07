@@ -11,7 +11,6 @@
 #include "connect.h"
 #include "esp_timer.h"
 
-
 typedef enum {
     SCR_SELF_TEST,
     SCR_OVERHEAT,
@@ -36,7 +35,7 @@ extern const lv_img_dsc_t bitaxe_logo;
 extern const lv_img_dsc_t osmu_logo;
 
 static lv_obj_t * screens[MAX_SCREENS];
-static int delays_ms[MAX_SCREENS] = {0, 0, 0, 0, 0, 1000, 3000, 3000, 10000, 10000, 5000};
+static int delays_ms[MAX_SCREENS] = {0, 0, 0, 0, 0, 1000, 2000, 4000, 4000, 10000, 4000};
 
 static screen_t current_screen = -1;
 static int current_screen_time_ms;
@@ -238,6 +237,21 @@ static lv_obj_t * create_scr_urls(SystemModule * module) {
     lv_label_set_text(label3, "IP Address:");
 
     ip_addr_scr_urls_label = lv_label_create(scr);
+
+    return scr;
+}
+
+static lv_obj_t * create_scr_unpainted(SystemModule * module) {
+    lv_obj_t * scr = lv_obj_create(NULL);
+
+    lv_obj_set_flex_flow(scr, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(scr, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+
+    lv_obj_t *label1 = lv_label_create(scr);
+    lv_label_set_text(label1, "  unpainted  ");
+
+    lv_obj_t *label2 = lv_label_create(scr);
+    lv_label_set_text(label2, esp_app_get_description()->version);
 
     return scr;
 }
@@ -523,7 +537,7 @@ esp_err_t screen_start(void * pvParameters)
         screens[SCR_FIRMWARE_UPDATE] = create_scr_ota(module);
         screens[SCR_CONNECTION] = create_scr_connection(module);
         screens[SCR_BITAXE_LOGO] = create_scr_bitaxe_logo(GLOBAL_STATE->DEVICE_CONFIG.family.name, GLOBAL_STATE->DEVICE_CONFIG.board_version);
-        screens[SCR_OSMU_LOGO] = create_scr_osmu_logo();
+        screens[SCR_OSMU_LOGO] = create_scr_unpainted(module);
         screens[SCR_URLS] = create_scr_urls(module);
         screens[SCR_STATS] = create_scr_stats();
         screens[SCR_WIFI_RSSI] = create_scr_wifi_rssi();

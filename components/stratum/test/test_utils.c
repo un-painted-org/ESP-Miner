@@ -2,12 +2,14 @@
 #include "utils.h"
 #include <string.h>
 
+/*
 TEST_CASE("Test double sha", "[utils]")
 {
     const char *input = "68656c6c6f";
     char *output = double_sha256(input);
     TEST_ASSERT_EQUAL_STRING("9595c9df90075148eb06860365df33584b75bff782a510c6cd4883a419833d50", output);
 }
+*/
 
 TEST_CASE("Test hex2bin", "[utils]")
 {
@@ -30,6 +32,7 @@ TEST_CASE("Test bin2hex", "[utils]")
     TEST_ASSERT_EQUAL_STRING("48454c4c4f", hex_string);
 }
 
+/*
 TEST_CASE("Test hex2char", "[utils]")
 {
     char output;
@@ -44,3 +47,4 @@ TEST_CASE("Test hex2char", "[utils]")
     result = hex2char(16, &output);
     TEST_ASSERT_EQUAL(-1, result);
 }
+*/

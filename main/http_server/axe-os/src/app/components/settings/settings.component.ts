@@ -27,6 +27,7 @@ export class SettingsComponent {
 
   public checkLatestRelease: boolean = false;
   public latestRelease$: Observable<any>;
+  public latestPreRelease$: Observable<any>;
 
   public info$: Observable<any>;
 
@@ -43,10 +44,19 @@ export class SettingsComponent {
   ) {
 
 
+    //this.latestRelease$ = this.githubUpdateService.getReleases().pipe(map(releases => {
+    //  return releases[0];
+    //}));
 
-    this.latestRelease$ = this.githubUpdateService.getReleases().pipe(map(releases => {
-      return releases[0];
-    }));
+    this.latestRelease$ = this.githubUpdateService.getReleases().pipe(
+      map(releases => releases.filter(release => !release.prerelease)), // Filtere die Releases
+      map(filteredReleases => filteredReleases[0]) // Wähle das erste gefilterte Release aus
+    );
+
+    this.latestPreRelease$ = this.githubUpdateService.getReleases().pipe(
+      map(releases => releases.filter(release => release.prerelease)), // Filtere die Pre-Releases
+      map(filteredReleases => filteredReleases[0]) // Wähle das erste gefilterte Release aus
+    );
 
     this.info$ = this.systemService.getInfo().pipe(shareReplay({refCount: true, bufferSize: 1}))
 
