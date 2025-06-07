@@ -10,6 +10,7 @@
 #include "display.h"
 #include "connect.h"
 #include "esp_timer.h"
+#include "esp_ota_ops.h"
 
 typedef enum {
     SCR_SELF_TEST,
