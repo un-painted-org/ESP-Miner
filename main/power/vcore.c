@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "esp_log.h"
+#include <string.h>
 
 #include "vcore.h"
 #include "adc.h"
