@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Firmware will no longer be developed. See https://github.com/un-painted-org/ESP-Miner/releases/tag/final
+
 
 # Customized firmware for the Lucky Miner LV07
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/un-painted-org/esp-miner/total?color=gold)
